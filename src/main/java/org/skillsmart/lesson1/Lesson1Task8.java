@@ -4,6 +4,9 @@ public class Lesson1Task8 {
 
     public static void main(String[] args) {
         Lesson1Utils utils = new Lesson1Utils();
+        LinkedList small = new LinkedList();
+        small.addInTail(new Node(1));
+
         LinkedList list1000000 = new LinkedList();
         for (int i = 0; i < 1000000; i++) {
             list1000000.addInTail(new Node(i));
@@ -22,10 +25,10 @@ public class Lesson1Task8 {
             list10000000rew.addInTail(new Node(i));
         }
 
-        long firstStartTime = System.currentTimeMillis();
+        /*long firstStartTime = System.currentTimeMillis();
         LinkedList result1 = utils.sumEqualLengthLists1(list1000000, list1000000rew);
         long firstCost =System.currentTimeMillis()-firstStartTime;
-        System.out.println("for 1 method cost for 1000000= "+ firstCost);
+        System.out.println("for 1 method cost for 1000000= "+ firstCost);*/
         //16 ms
 
         /*long firstStartTimeBig = System.currentTimeMillis();
@@ -58,6 +61,15 @@ public class Lesson1Task8 {
         long thirdCostBig =System.currentTimeMillis()-thirdStartTimeBig;
         System.out.println("for 3 method cost for 10000000= "+ thirdCostBig);*/
         //4223
+
+        long firstStartTimeBigNoEqual = System.currentTimeMillis();
+        LinkedList result1noEqual = utils.sumEqualLengthLists1(list10000000, small);
+        long firstTimeSmall =System.currentTimeMillis()-firstStartTimeBigNoEqual;
+        System.out.println("firstTimeSmall = "+ firstTimeSmall);
+        //24
+
+        //у sumEqualLengthLists2 = 0
+        //у sumEqualLengthLists3 = 0
     }
 
 }

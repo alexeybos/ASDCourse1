@@ -2,10 +2,6 @@ package org.skillsmart.lesson1;
 
 public class Lesson1Utils {
 
-    /**
-     * 8. Напишите функцию, которая получает на вход два связных списка, состоящие из целых значений, и если их длины равны,
-     * возвращает список, каждый элемент которого равен сумме соответствующих элементов входных списков.
-     */
     public LinkedList sumEqualLengthLists1(LinkedList _firstList, LinkedList _secondList) {
         LinkedList resultList = new LinkedList();
         if (_firstList == null || _secondList == null) {
