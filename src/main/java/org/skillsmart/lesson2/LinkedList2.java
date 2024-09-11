@@ -136,48 +136,38 @@ public class LinkedList2
         Node node = this.head;
         this.head = this.tail;
         this.tail = node;
+        for (Node iNode = node; iNode != null; iNode = iNode.prev) {
+            Node next = iNode.next;
+            iNode.next = iNode.prev;
+            iNode.prev = next;
+        }
+        /* первоначально сделал через while
         while (node != null) {
             Node next = node.next;
             node.next = node.prev;
             node.prev = next;
             node = next;
-        }
+        }*/
     }
 
     public boolean hasCycles() {
-
-        return false;
+        if (this.head == null || this.head.next == null) {
+            return false;
+        }
+        Node fast = this.head.next;
+        for (Node node = this.head; node != fast; node = node.next) {
+            if (fast.next == null || fast.next.next == null) {
+                return false;
+            }
+            fast = fast.next.next;
+        }
+        return true;
     }
 
     public void sort() {
         LinkedList2 list = mergeSort(this);
         this.head = list.head;
         this.tail = list.tail;
-    }
-
-    public LinkedList2 merge(LinkedList2 _list1, LinkedList2 _list2) {
-        LinkedList2 resultList = new LinkedList2();
-        Node node1 = _list1.head;
-        Node node2 = _list2.head;
-        while (node1 != null && node2 != null) {
-            if (node1.value <= node2.value) {
-                resultList.addInTail(new Node(node1.value));
-                node1 = node1.next;
-            } else {
-                resultList.addInTail(new Node(node2.value));
-                node2 = node2.next;
-            }
-        }
-        while (node1 != null) {
-            resultList.addInTail(new Node(node1.value));
-            node1 = node1.next;
-        }
-        while (node2 != null) {
-            resultList.addInTail(new Node(node2.value));
-            node2 = node2.next;
-        }
-
-        return resultList;
     }
 
     private LinkedList2 mergeSort(LinkedList2 list) {
@@ -192,15 +182,38 @@ public class LinkedList2
             leftList.addInTail(new Node(node.value));
             node = node.next;
         }
-        while (node != null) {
-            rightList.addInTail(new Node(node.value));
-            node = node.next;
+        for (Node iNode = node; iNode != null; iNode = iNode.next) {
+            rightList.addInTail(new Node(iNode.value));
         }
 
         leftList = mergeSort(leftList);
         rightList = mergeSort(rightList);
 
         return merge(leftList, rightList);
+    }
+
+    private LinkedList2 merge(LinkedList2 _list1, LinkedList2 _list2) {
+        LinkedList2 resultList = new LinkedList2();
+        Node node1 = _list1.head;
+        Node node2 = _list2.head;
+        //здесь мне показалось, что конструкция while более наглядная и я ее оставил
+        while (node1 != null && node2 != null) {
+            if (node1.value <= node2.value) {
+                resultList.addInTail(new Node(node1.value));
+                node1 = node1.next;
+            } else {
+                resultList.addInTail(new Node(node2.value));
+                node2 = node2.next;
+            }
+        }
+        for (Node iNode = node1; iNode != null; iNode = iNode.next) {
+            resultList.addInTail(new Node(iNode.value));
+        }
+        for (Node iNode = node2; iNode != null; iNode = iNode.next) {
+            resultList.addInTail(new Node(iNode.value));
+        }
+
+        return resultList;
     }
 
 }

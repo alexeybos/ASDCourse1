@@ -587,6 +587,36 @@ class LinkedList2Test {
         assertEquals(4, list.tail.value);
     }
 
+    @Test
+    void testHasCycles_EmptyList() {
+        assertFalse(testList.hasCycles());
+    }
+
+    @Test
+    void testHasCycles_SingleList() {
+        assertFalse(testListSingleItem.hasCycles());
+    }
+
+    @Test
+    void testHasCycles_CycleSingleList() {
+        Node node = testListSingleItem.head;
+        testListSingleItem.head.prev = node;
+        testListSingleItem.head.next = node;
+        assertTrue(testListSingleItem.hasCycles());
+    }
+
+    @Test
+    void testHasCycles_NoCyclesList() {
+        assertFalse(testList.hasCycles());
+    }
+
+    @Test
+    void testHasCycles_CyclesList() {
+        assertTrue(cycleList.hasCycles());
+    }
+
+
+
     private int reverseCount(LinkedList2 list) {
         int cnt = 0;
         Node node = list.tail;
