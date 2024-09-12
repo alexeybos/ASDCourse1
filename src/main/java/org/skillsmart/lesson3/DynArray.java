@@ -26,7 +26,9 @@ public class DynArray<T>
         T[] oldArray = array;
         array = (T[]) Array.newInstance(this.clazz, new_capacity);
         //TODO Надо ли проверять что new_capacity > count? в случае reduce Иначе тут поплохеет, метод-то публичный...
-        System.arraycopy(oldArray, 0, array, 0, count);
+        if (count > 0) {
+            System.arraycopy(oldArray, 0, array, 0, count);
+        }
         capacity = new_capacity;
     }
 
