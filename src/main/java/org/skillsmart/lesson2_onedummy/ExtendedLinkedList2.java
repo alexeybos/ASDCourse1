@@ -7,6 +7,7 @@ package org.skillsmart.lesson2_onedummy;
  */
 public class ExtendedLinkedList2 {
     private final DummyNode _dummyNode;
+    
     public ExtendedLinkedList2()
     {
         _dummyNode = new DummyNode();
