@@ -2,22 +2,39 @@ package org.skillsmart.lesson3;
 
 import java.lang.reflect.Array;
 
-public class DynArray<T>
-{
+public class BankDynArray<T> {
+
     private static final int INITIAL_CAPACITY = 16;
     private static final int APPEND_MULTIPLIER = 2;
     private static final double REDUCE_MULTIPLIER = 1.5;
-    private static final double EMPTY_RATIO = 0.5;
+
+    private int simpleOperationPrice = 3;
+    private int reallocationPrice = 32; //степень двойки не превышающая новый размер массива
+    private int savedCost = 0;
     public T [] array;
     public int count;
     public int capacity;
+
     Class clazz;
 
-    public DynArray(Class clz)
+    public BankDynArray(Class clz)
     {
         clazz = clz;
         count = 0;
         makeArray(INITIAL_CAPACITY);
+    }
+
+    private int calcAppendPrice() {
+        //count * 2
+        return capacity;
+    }
+
+    private int calcReducePrice() {
+        return 0;
+    }
+
+    private boolean isMayReallocate() {
+        return true;
     }
 
     public void makeArray(int new_capacity)
@@ -78,12 +95,8 @@ public class DynArray<T>
         if (capacity == INITIAL_CAPACITY) {
             return;
         }
-        if (count - 1 < (int) (capacity * EMPTY_RATIO)) {
+        /*if (count - 1 < (int) (capacity * EMPTY_RATIO)) {
             makeArray(Math.max((int) (capacity / REDUCE_MULTIPLIER), INITIAL_CAPACITY));
-        }
+        }*/
     }
-
 }
-
-
-
