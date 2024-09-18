@@ -7,15 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DynArrayTest {
 
-
-    @BeforeEach
-    void setUp() {
-        /*DynArray<Integer> array = new DynArray<>(Integer.class);
-        array.append(1);
-        array.append(2);
-        array.append(3);*/
-    }
-
     @Test
     void testMakeArray_ByDefault() {
         DynArray<Integer> array = new DynArray<>(Integer.class);
