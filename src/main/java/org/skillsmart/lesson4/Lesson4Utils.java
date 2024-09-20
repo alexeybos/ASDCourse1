@@ -1,6 +1,8 @@
 package org.skillsmart.lesson4;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Lesson4Utils {
@@ -12,9 +14,10 @@ public class Lesson4Utils {
             if (aChar == '(') {
                 stack.push(1);
             } else {
-                if (stack.pop() == null) {
+                if (stack.size() == 0) {
                     return false;
                 }
+                stack.pop();
             }
         }
         return stack.size() == 0;
@@ -27,21 +30,16 @@ public class Lesson4Utils {
     public boolean isBracketBalanced(String str) {
         char[] chars = str.toCharArray();
         Stack<Character> stack = new Stack<>();
+        Map<Character, Character> bracketPairs = new HashMap<>();
+        bracketPairs.put(')', '(');
+        bracketPairs.put('}', '{');
+        bracketPairs.put(']', '[');
         for (char aChar : chars) {
             if (aChar == '(' || aChar =='{' || aChar == '[') {
                 stack.push(aChar);
             } else {
                 Character value = stack.pop();
-                char bracketPair;
-                //Пары скобок можно реализовать с помощью HashMap, но в условии разрешен только стек
-                if (aChar == ')') {
-                    bracketPair = '(';
-                } else if (aChar == '}') {
-                    bracketPair = '{';
-                } else {
-                    bracketPair = '[';
-                }
-                if (value == null || value != bracketPair) {
+                if (value == null || value != bracketPairs.get(aChar)) {
                     return false;
                 }
             }
@@ -57,6 +55,10 @@ public class Lesson4Utils {
                 calcStack.push(calcStack.pop() * calcStack.pop());
             } else if (Objects.equals(val, "+")) {
                 calcStack.push(calcStack.pop() + calcStack.pop());
+            } else if (Objects.equals(val, "-")) {
+                calcStack.push(calcStack.pop() - calcStack.pop());
+            } else if (Objects.equals(val, "/")) {
+                calcStack.push(calcStack.pop() / calcStack.pop());
             } else if (Objects.equals(val, "=")) {
                 return calcStack.peek();
             } else { //число

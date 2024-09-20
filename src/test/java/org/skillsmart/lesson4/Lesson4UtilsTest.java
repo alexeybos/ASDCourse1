@@ -46,5 +46,6 @@ class Lesson4UtilsTest {
         assertEquals(9, utils.postfixExpressionCalculate("1 2 + 3 *"));
         int res = utils.postfixExpressionCalculate("8 2 + 5 * 9 + =");
         assertEquals(59, res);
+        assertEquals(2, utils.postfixExpressionCalculate("3 8 - 6 + 2 * 44 / ="));
     }
 }
