@@ -44,8 +44,10 @@ class StackTest {
         assertEquals(1, stack.size());
         stack.push("1");
         assertEquals(2, stack.size());
-        assertEquals(0, stack.pop());
         assertEquals("1", stack.pop());
+        assertEquals(0, stack.pop());
+        assertNull(stack.pop());
+        assertEquals(0, stack.size());
     }
 
     @Test
@@ -89,4 +91,70 @@ class StackTest {
         assertEquals(0.5, stack.peek());
         assertEquals(3, stack.size());
     }
+
+    @Test
+    void testGetMinValue() {
+        Stack<Integer> stack = new Stack<>();
+        stack.push(10);
+        assertEquals(10, stack.getMinValue());
+        stack.push(4);
+        assertEquals(4, stack.getMinValue());
+        stack.push(5);
+        assertEquals(4, stack.getMinValue());
+        stack.push(4);
+        assertEquals(4, stack.getMinValue());
+        stack.pop();
+        assertEquals(4, stack.getMinValue());
+        stack.pop();
+        assertEquals(4, stack.getMinValue());
+        stack.pop();
+        assertEquals(10, stack.getMinValue());
+        stack.pop();
+        assertNull(stack.getMinValue());
+    }
+
+    @Test
+    void testGetMinValue_DifferentTypes() {
+        Stack stack = new Stack<>();
+        stack.push(10);
+        assertEquals(10, stack.getMinValue());
+        stack.push("qwerty10");
+        assertEquals(10, stack.getMinValue());
+        stack.push(4);
+        assertEquals(4, stack.getMinValue());
+        stack.push(5);
+        assertEquals(4, stack.getMinValue());
+        stack.push(4);
+        assertEquals(4, stack.getMinValue());
+        stack.pop();
+        assertEquals(4, stack.getMinValue());
+        stack.pop();
+        assertEquals(4, stack.getMinValue());
+        stack.pop();
+        assertEquals(10, stack.getMinValue());
+        stack.pop();
+        assertEquals(10, stack.getMinValue());
+        stack.pop();
+        assertNull(stack.getMinValue());
+    }
+
+    @Test
+    void testGetAverageValue() {
+        Stack stack = new Stack<>();
+        stack.push(4);
+        assertEquals(4, stack.getAverageValue());
+        stack.push("qwerty10");
+        stack.push(4);
+        assertEquals(4, stack.getAverageValue());
+        stack.push(7);
+        assertEquals(5, stack.getAverageValue());
+        stack.pop();
+        assertEquals(4, stack.getAverageValue());
+        stack.pop();
+        assertEquals(4, stack.getAverageValue());
+        stack.pop();
+        stack.pop();
+        assertEquals(0, stack.getAverageValue());
+    }
+
 }

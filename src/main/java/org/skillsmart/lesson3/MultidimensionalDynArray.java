@@ -4,6 +4,12 @@ import java.lang.reflect.Array;
 
 public class MultidimensionalDynArray<T> {
 
+    /*
+        Как-то усложнено, идея, что у нас есть интерфейс добавления элемента в некоторую позицию (i,j,k,...),
+        а внутри это может быть обычный одномерный динамический массив. Надо просто корректно реализовать операцию
+        добавления элемента (отображение многомерной координаты в линию).
+     */
+
     private static final int APPEND_MULTIPLIER = 2;
 
     public Object[] array;

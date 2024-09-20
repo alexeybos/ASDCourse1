@@ -83,7 +83,7 @@ class MultidimensionalDynArrayTest {
 
     @Test
     void testSetItem_3DWithResize() {
-        MultidimensionalDynArray<Integer> array = new MultidimensionalDynArray<>(Integer.class, 2, 2, 2);
+        MultidimensionalDynArray<Integer> array = new MultidimensionalDynArray<>(Integer.class, 3, 4, 5);
         array.setItem(123, 0, 0, 0);
         array.setItem(1231, 0, 1, 0);
         array.setItem(12312, 0, 1, 2);
