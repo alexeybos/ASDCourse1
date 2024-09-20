@@ -35,11 +35,10 @@ public class Lesson4Utils {
         bracketPairs.put('}', '{');
         bracketPairs.put(']', '[');
         for (char aChar : chars) {
-            if (aChar == '(' || aChar =='{' || aChar == '[') {
+            if (bracketPairs.containsValue(aChar)) {
                 stack.push(aChar);
             } else {
-                Character value = stack.pop();
-                if (value == null || value != bracketPairs.get(aChar)) {
+                if (stack.size() == 0 || stack.pop() != bracketPairs.get(aChar)) {
                     return false;
                 }
             }
@@ -56,9 +55,13 @@ public class Lesson4Utils {
             } else if (Objects.equals(val, "+")) {
                 calcStack.push(calcStack.pop() + calcStack.pop());
             } else if (Objects.equals(val, "-")) {
-                calcStack.push(calcStack.pop() - calcStack.pop());
+                Integer minuend = calcStack.pop();
+                Integer subtrahend = calcStack.pop();
+                calcStack.push(minuend - subtrahend);
             } else if (Objects.equals(val, "/")) {
-                calcStack.push(calcStack.pop() / calcStack.pop());
+                Integer dividend = calcStack.pop();
+                Integer divisor = calcStack.pop();
+                calcStack.push(dividend / divisor);
             } else if (Objects.equals(val, "=")) {
                 return calcStack.peek();
             } else { //число
