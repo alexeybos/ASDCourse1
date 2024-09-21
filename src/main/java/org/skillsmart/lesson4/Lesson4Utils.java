@@ -50,23 +50,23 @@ public class Lesson4Utils {
         Stack<Integer> calcStack = new Stack<Integer>();
         for ( ; expression.size() > 0; ) {
             String val = expression.pop().toString();
+            int iterationResult;
             if (Objects.equals(val, "*")) {
-                calcStack.push(calcStack.pop() * calcStack.pop());
+                iterationResult = calcStack.pop() * calcStack.pop();
             } else if (Objects.equals(val, "+")) {
-                calcStack.push(calcStack.pop() + calcStack.pop());
+                iterationResult = calcStack.pop() + calcStack.pop();
             } else if (Objects.equals(val, "-")) {
                 Integer minuend = calcStack.pop();
-                Integer subtrahend = calcStack.pop();
-                calcStack.push(minuend - subtrahend);
+                iterationResult = minuend - calcStack.pop();
             } else if (Objects.equals(val, "/")) {
                 Integer dividend = calcStack.pop();
-                Integer divisor = calcStack.pop();
-                calcStack.push(dividend / divisor);
+                iterationResult = dividend / calcStack.pop();
             } else if (Objects.equals(val, "=")) {
                 return calcStack.peek();
             } else { //число
-                calcStack.push(Integer.parseInt(val));
+                iterationResult = Integer.parseInt(val);
             }
+            calcStack.push(iterationResult);
         }
         return calcStack.peek();
     }
