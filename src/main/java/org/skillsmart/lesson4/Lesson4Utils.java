@@ -51,19 +51,21 @@ public class Lesson4Utils {
         for ( ; expression.size() > 0; ) {
             String val = expression.pop().toString();
             int iterationResult;
+            Integer firstArgument = calcStack.pop();
+            Integer secondArgument = calcStack.pop();
             if (Objects.equals(val, "*")) {
-                iterationResult = calcStack.pop() * calcStack.pop();
+                iterationResult = firstArgument * secondArgument;
             } else if (Objects.equals(val, "+")) {
-                iterationResult = calcStack.pop() + calcStack.pop();
+                iterationResult = firstArgument + secondArgument;
             } else if (Objects.equals(val, "-")) {
-                Integer minuend = calcStack.pop();
-                iterationResult = minuend - calcStack.pop();
+                iterationResult = firstArgument - secondArgument;
             } else if (Objects.equals(val, "/")) {
-                Integer dividend = calcStack.pop();
-                iterationResult = dividend / calcStack.pop();
+                iterationResult = firstArgument / secondArgument;
             } else if (Objects.equals(val, "=")) {
-                return calcStack.peek();
+                return firstArgument;
             } else { //число
+                //возвращаем обратно аргумент, т.к. на этом шаге мы ничего вычислять не будем
+                calcStack.push(firstArgument);
                 iterationResult = Integer.parseInt(val);
             }
             calcStack.push(iterationResult);
