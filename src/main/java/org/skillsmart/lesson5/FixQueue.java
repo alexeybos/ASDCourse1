@@ -1,7 +1,6 @@
 package org.skillsmart.lesson5;
 
 import java.lang.reflect.Array;
-import java.util.*;
 
 public class FixQueue<T> {
 
@@ -28,7 +27,7 @@ public class FixQueue<T> {
     public void enqueue(T item)
     {
         if (isFull()) {
-            throw new ArrayStoreException("Queue is already full"); //Exception("Queue is already full");
+            throw new ArrayStoreException("Queue is already full");
         }
         array[tailIndex] = item;
         tailIndex = changeIndex(tailIndex);
