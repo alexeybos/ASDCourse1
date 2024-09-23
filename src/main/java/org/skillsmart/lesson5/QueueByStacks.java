@@ -6,7 +6,6 @@ public class QueueByStacks<T> {
 
     private final Stack<T> stack1;
     private final Stack<T> stack2;
-    public int size;
 
     public QueueByStacks() {
         stack1 = new Stack<>();
@@ -16,15 +15,13 @@ public class QueueByStacks<T> {
     public void enqueue(T item)
     {
         stack1.push(item);
-        size += 1;
     }
 
     public T dequeue()
     {
-        if (this.size == 0) {
+        if (stack1.size() + stack2.size() == 0) {
             return null;
         }
-        size -= 1;
         if (stack2.size() > 0) {
             return stack2.pop();
         }
@@ -36,6 +33,6 @@ public class QueueByStacks<T> {
 
     public int size()
     {
-        return this.size;
+        return stack1.size() + stack2.size();
     }
 }
