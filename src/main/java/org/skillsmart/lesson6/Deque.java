@@ -13,12 +13,12 @@ public class Deque<T>
 
     public void addFront(T item)
     {
-        deque.addFirst(item);
+        deque.addLast(item);
     }
 
     public void addTail(T item)
     {
-        deque.addLast(item);
+        deque.addFirst(item);
     }
 
     public T removeFront()
@@ -26,7 +26,7 @@ public class Deque<T>
         if (size() == 0) {
             return null;
         }
-        return deque.removeFirst();
+        return deque.removeLast();
     }
 
     public T removeTail()
@@ -34,7 +34,7 @@ public class Deque<T>
         if (size() == 0) {
             return null;
         }
-        return deque.removeLast();
+        return deque.removeFirst();
     }
 
     public int size()
