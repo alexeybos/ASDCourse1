@@ -1,31 +1,28 @@
 package org.skillsmart.lesson5;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class FixQueue<T> {
 
     private static final int DEFAULT_SIZE = 16;
-    private ArrayList<T> array;
-    private int beginIndex;
-    private int endIndex;
-    private int maxSize;
+    private final int maxSize;
+    private final T [] array;
+    private int headIndex;
+    private int tailIndex;
 
     public int size;
 
     public FixQueue() {
-        array = new ArrayList<>(DEFAULT_SIZE);
-        maxSize = DEFAULT_SIZE;
-        size = 0;
-        beginIndex = 0;
-        endIndex = 0;
+        this(DEFAULT_SIZE);
     }
 
     public FixQueue(int queueSize) {
-        array = new ArrayList<>(queueSize);
+        array = (T[]) Array.newInstance(Object.class, queueSize);
         maxSize = queueSize;
         size = 0;
-        beginIndex = 0;
-        endIndex = 0;
+        headIndex = 0;
+        tailIndex = 0;
     }
 
     public void enqueue(T item)
@@ -33,8 +30,8 @@ public class FixQueue<T> {
         if (isFull()) {
             throw new ArrayStoreException("Queue is already full"); //Exception("Queue is already full");
         }
-        // вставка в хвост
-        // смещаем индекс хвоста
+        array[tailIndex] = item;
+        tailIndex = changeIndex(tailIndex);
         this.size += 1;
     }
 
@@ -43,19 +40,26 @@ public class FixQueue<T> {
         if (this.size == 0) {
             return null;
         }
-        //смещаем индекс головы
+        T returnValue = array[headIndex];
+        headIndex = changeIndex(headIndex);
         this.size -= 1;
-        return array.get(beginIndex);
+        return returnValue;
     }
 
     public int size()
     {
-        return this.size; // размер очереди
+        return this.size;
     }
 
     public boolean isFull() {
         return this.size == maxSize;
     }
 
+    private int changeIndex(int _index) {
+        if (_index == maxSize - 1) {
+            return 0;
+        }
+        return _index + 1;
+    }
 
 }
