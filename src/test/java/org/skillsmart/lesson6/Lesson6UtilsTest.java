@@ -9,10 +9,19 @@ class Lesson6UtilsTest {
     private final Lesson6Utils utils = new Lesson6Utils();
 
     @Test
-    void isPalindrome() {
+    void testIsPalindrome() {
         assertTrue(utils.isPalindrome("А роза упала на лапу Азора"));
         assertFalse(utils.isPalindrome("А роза не упала на лапу Азора"));
         assertTrue(utils.isPalindrome(""));
-        assertTrue(utils.isPalindrome("Оголи жопу пожилого"));
+        assertTrue(utils.isPalindrome("Лёша на полке клопа нашёл"));
+        assertTrue(utils.isPalindrome("Anna"));
+        assertTrue(utils.isPalindrome("Madam, I’m Adam"));
+    }
+
+    @Test
+    void testIsBracketBalance() {
+        assertTrue(utils.isBracketBalanced("(2 + 3)*(abs[1] - 8)"));
+        assertTrue(utils.isBracketBalanced("(2 + {3})*{(abs[1] - 8)}"));
+        assertFalse(utils.isBracketBalanced("(2 + [{3})]*{(abs[1] - 8)}"));
     }
 }

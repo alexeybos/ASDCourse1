@@ -20,7 +20,7 @@ class DequeTest {
         assertEquals(3, deque.deque.get(0));
         assertEquals("two", deque.deque.get(1));
         assertEquals(1, deque.deque.get(2));
-        assertEquals(0, deque.size());
+        assertEquals(3, deque.size());
     }
 
     @Test
@@ -37,7 +37,7 @@ class DequeTest {
         assertEquals(3, deque.deque.get(0));
         assertEquals("two", deque.deque.get(1));
         assertEquals(1, deque.deque.get(2));
-        assertEquals(0, deque.size());
+        assertEquals(3, deque.size());
     }
 
     @Test
@@ -85,5 +85,29 @@ class DequeTest {
         assertEquals("t2", deq.removeTail());
         assertEquals("f1", deq.removeFront());
         assertEquals("t1", deq.removeTail());
+    }
+
+    @Test
+    void testGetMinValue() {
+        MinDeque deq = new MinDeque();
+        deq.addFront(6);
+        assertEquals(6, deq.getMinValue());
+        deq.addFront("text1");
+        assertEquals(6, deq.getMinValue());
+        deq.addFront(8);
+        assertEquals(6, deq.getMinValue());
+        deq.addTail(5);
+        assertEquals(5, deq.getMinValue());
+        deq.addTail(3);
+        assertEquals(3, deq.getMinValue());
+        deq.removeTail();
+        assertEquals(5, deq.getMinValue());
+        deq.removeTail();
+        assertEquals(6, deq.getMinValue());
+        deq.removeTail();
+        assertEquals(8, deq.getMinValue());
+        deq.removeFront();
+        assertEquals(1, deq.size());
+        assertNull(deq.getMinValue());
     }
 }

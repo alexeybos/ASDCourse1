@@ -74,6 +74,15 @@ public class DynArray<T>
         count -= 1;
     }
 
+    public void removeLast()
+    {
+        if (count == 0) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        shrinkIfNeed();
+        count -= 1;
+    }
+
     private void shrinkIfNeed() {
         if (capacity == INITIAL_CAPACITY) {
             return;

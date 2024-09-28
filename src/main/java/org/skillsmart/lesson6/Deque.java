@@ -5,7 +5,6 @@ import java.util.*;
 public class Deque<T>
 {
     public LinkedList<T> deque;
-
     public Deque()
     {
         deque = new LinkedList<>();
