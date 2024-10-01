@@ -139,6 +139,8 @@ class OrderedListTest {
         assertEquals(1, list.count());
         list.delete(100);
         assertEquals(0, list.count());
+        assertNull(list.head);
+        assertNull(list.tail);
         list.add(100);
         list.add(200);
         list.delete(100);
@@ -165,6 +167,8 @@ class OrderedListTest {
         list.add(100);
         list.delete(100);
         assertEquals(0, list.count());
+        assertNull(list.head);
+        assertNull(list.tail);
         list.add(100);
         list.add(200);
         list.delete(100);

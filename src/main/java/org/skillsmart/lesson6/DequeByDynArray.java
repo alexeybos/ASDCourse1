@@ -2,73 +2,120 @@ package org.skillsmart.lesson6;
 
 import org.skillsmart.lesson3.DynArray;
 
+import java.lang.reflect.Array;
+
 public class DequeByDynArray<T> {
 
-    public DynArray<Object> headArray;
-    public DynArray<Object> tailArray;
-
+    DynArray<T> array;
+    public int size;
     public int headIndex;
     public int tailIndex;
 
-    public int size;
-
     public DequeByDynArray() {
-        headArray = new DynArray<>(Object.class);
-        tailArray = new DynArray<>(Object.class);
-        headIndex = -1;
-        tailIndex = -1;
-        size = 0;
+        array = new DynArray<>(Object.class);
+        headIndex = 0;
+        tailIndex = 0;
     }
 
     public void addFront(T item)
     {
-        headIndex = addItem(headArray, tailArray, headIndex, item);
+        if (size == 0) { //будет первый элемент
+            addIntoEmptyArray(item);
+            return;
+        }
+        size += 1;
+        if (headIndex + 1 == tailIndex) {
+            prepareToExpandArray();
+            headIndex = array.capacity;
+            tailIndex = 0;
+            array.append(item);
+            return;
+        }
+        headIndex += 1;
+        if (headIndex == array.capacity) {
+            array.append(item);
+            return;
+        }
+        array.array[headIndex] = item;
+        array.count += 1;
     }
 
     public void addTail(T item)
     {
-        tailIndex = addItem(tailArray, headArray, tailIndex, item);
+        if (size == 0) { //будет первый элемент
+            addIntoEmptyArray(item);
+            return;
+        }
+        size += 1;
+        if (headIndex == tailIndex - 1) {
+            prepareToExpandArray();
+            headIndex = array.capacity;
+            tailIndex = 0;
+            //"раздвигаем" массив штатным образом.
+            array.insert(item, 0);
+            return;
+        }
+        tailIndex -= 1;
+        if (tailIndex < 0) {
+            tailIndex = array.capacity - 1;
+        }
+        array.array[tailIndex] = item;
+        array.count += 1;
+    }
+
+    private void addIntoEmptyArray(T item) {
+        headIndex = 0;
+        tailIndex = 0;
+        array.array[headIndex] = item;
+        array.count += 1;
+        size += 1;
+    }
+
+    private void prepareToExpandArray() {
+        //надо "распрямить" кольцо
+        if (headIndex < tailIndex) {
+            T [] tempArray = (T[]) Array.newInstance(Object.class, array.capacity);
+            for (int i = 0; i < array.capacity; i++) {
+                int realTailIndex = tailIndex + i;
+                if (realTailIndex == array.capacity) {
+                    realTailIndex = 0;
+                }
+                tempArray[i] = array.array[realTailIndex];
+            }
+            System.arraycopy(tempArray, 0, array.array, 0, array.capacity);
+        }
     }
 
     public T removeFront()
     {
-        if (size() == 0) {
+        if (size == 0) {
             return null;
         }
-        T value = removeItem(headArray, tailArray, headIndex);
-        headIndex -= 1;
-        return value;
+        T item = array.getItem(headIndex);
+        size -= 1;
+        if (size != 0) {
+            headIndex -= 1;
+            if (headIndex < 0) {
+                headIndex = array.capacity - 1;
+            }
+        }
+        return item;
     }
 
     public T removeTail()
     {
-        if (size() == 0) {
+        if (size == 0) {
             return null;
         }
-        T value = removeItem(tailArray, headArray, tailIndex);
-        tailIndex -= 1;
-        return value;
-    }
-
-    private int addItem(DynArray<Object> nativeArray, DynArray<Object> alienArray, int index, T item) {
-        index += 1;
-        if (index < 0) { //находимся в "чужом" массиве, надо вернуть долг
-            alienArray.array[Math.abs(index + 1)] = item;
-        } else {
-            nativeArray.append(item);
-        }
-        size += 1;
-        return index;
-    }
-
-    private T removeItem(DynArray<Object> nativeArray, DynArray<Object> alienArray, int index) {
+        T item = array.getItem(tailIndex);
         size -= 1;
-        if (index < 0) { //все что клали в "родной" массив, кончилось, берем с начала "чужого"
-            return (T) alienArray.getItem(Math.abs(index + 1));
+        if (size != 0) {
+            tailIndex += 1;
+            if (tailIndex == array.capacity) {
+                tailIndex = 0;
+            }
         }
-        T value = (T) nativeArray.getItem(index);
-        nativeArray.removeLast();
-        return value;
+        return item;
     }
 
     public int size()

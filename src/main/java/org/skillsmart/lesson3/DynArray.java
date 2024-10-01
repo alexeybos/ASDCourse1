@@ -32,7 +32,7 @@ public class DynArray<T>
 
     public T getItem(int index)
     {
-        if (index < 0 || index >= count) {
+        if (index < 0 || index >= capacity) {
             throw new ArrayIndexOutOfBoundsException();
         }
         return array[index];
@@ -49,7 +49,7 @@ public class DynArray<T>
 
     public void insert(T itm, int index)
     {
-        if (index < 0 || index > count) {
+        if (index < 0 || index > capacity) {
             throw new ArrayIndexOutOfBoundsException();
         }
         if (index == capacity || count == capacity) {
@@ -64,7 +64,7 @@ public class DynArray<T>
 
     public void remove(int index)
     {
-        if (index < 0 || index >= count) {
+        if (index < 0 || index >= capacity) {
             throw new ArrayIndexOutOfBoundsException();
         }
         shrinkIfNeed();

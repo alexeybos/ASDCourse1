@@ -26,13 +26,13 @@ class DynArrayTest {
     void testGetItem_OutBound() {
         DynArray<Integer> array = new DynArray<>(Integer.class);
         array.append(1);
-        ArrayIndexOutOfBoundsException e = assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> array.getItem(1));
+        ArrayIndexOutOfBoundsException e = assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> array.getItem(17));
     }
 
     @Test
     void testGetItem_OutBoundInEmptyArray() {
         DynArray<Integer> array = new DynArray<>(Integer.class);
-        ArrayIndexOutOfBoundsException e = assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> array.getItem(0));
+        ArrayIndexOutOfBoundsException e = assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> array.getItem(17));
     }
 
     @Test
@@ -140,7 +140,7 @@ class DynArrayTest {
     @Test
     void testInsert_OutOfBoundInEmptyArray() {
         DynArray<Integer> array = new DynArray<>(Integer.class);
-        ArrayIndexOutOfBoundsException e = assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> array.insert(4, 1));
+        ArrayIndexOutOfBoundsException e = assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> array.insert(4, 17));
     }
 
     @Test
@@ -148,7 +148,7 @@ class DynArrayTest {
         DynArray<Integer> array = new DynArray<>(Integer.class);
         array.append(1);
         array.append(2);
-        ArrayIndexOutOfBoundsException e = assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> array.insert(4, 3));
+        ArrayIndexOutOfBoundsException e = assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> array.insert(4, 17));
     }
 
     //-- удаление элемента, когда в результате размер буфера остаётся прежним (проверьте также размер буфера);
@@ -214,13 +214,13 @@ class DynArrayTest {
         DynArray<Integer> array = new DynArray<>(Integer.class);
         array.append(1);
         array.append(2);
-        ArrayIndexOutOfBoundsException e = assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> array.remove(2));
+        ArrayIndexOutOfBoundsException e = assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> array.remove(17));
     }
 
     @Test
     void testRemove_OutOfBoundEmptyArray() {
         DynArray<Integer> array = new DynArray<>(Integer.class);
-        ArrayIndexOutOfBoundsException e = assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> array.remove(0));
+        ArrayIndexOutOfBoundsException e = assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> array.remove(17));
     }
 
     @Test
