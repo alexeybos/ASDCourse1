@@ -6,38 +6,65 @@ public class HashTable
     public int step;
     public String [] slots;
 
+    public int count;
+
     public HashTable(int sz, int stp)
     {
         size = sz;
         step = stp;
         slots = new String[size];
         for(int i=0; i<size; i++) slots[i] = null;
+        count = 0;
     }
 
     public int hashFun(String value)
     {
-        // всегда возвращает корректный индекс слота
-        return 0;
+        byte[] chars = value.getBytes();
+        int sum = 0;
+        for (byte aChar : chars) {
+            sum += aChar;
+        }
+        return sum%size;
     }
 
     public int seekSlot(String value)
     {
-        // находит индекс пустого слота для значения, или -1
+        int slot = hashFun(value);
+        for (int i = 0; i <= step; i++) {
+            for (; slot < size; slot += step) {
+                if (slots[slot] == null) return slot;
+            }
+            slot -= size;
+        }
         return -1;
     }
 
     public int put(String value)
     {
-        // записываем значение по хэш-функции
-
-        // возвращается индекс слота или -1
-        // если из-за коллизий элемент не удаётся разместить
-        return -1;
+        if (count == size) {
+            return -1;
+        }
+        int slot = seekSlot(value);
+        if (slot == -1) return -1;
+        slots[slot] = value;
+        count += 1;
+        return slot;
     }
 
     public int find(String value)
     {
-        // находит индекс слота со значением, или -1
+        int slot = hashFun(value);
+        for (int i = 0; i <= step; i++) {
+            for (; slot < size; slot += step) {
+                //if (Objects.equals(slots[slot], value)) return slot;
+                if (slots[slot] == value) return slot;
+                if (slots[slot] == null) return -1;
+            }
+            slot -= size;
+        }
         return -1;
     }
 }
+
+
+
