@@ -210,4 +210,157 @@ class OrderedListTest {
         assertEquals(0, list.count());
     }
 
+    @Test
+    void testDeleteDuplicates_Asc() {
+        OrderedList<Integer> list = new OrderedList<>(true);
+        list.add(100);
+        list.add(100);
+        list.add(100);
+        list.add(100);
+        list.add(100);
+        list.deleteDuplicates();
+        assertEquals(list.count(), 1);
+        assertEquals(100, list.head.value);
+        assertEquals(100, list.tail.value);
+        list.add(200);
+        list.add(200);
+        list.add(100);
+        list.add(300);
+        list.deleteDuplicates();
+        assertEquals(list.count(), 3);
+        assertEquals(100, list.head.value);
+        assertEquals(200, list.head.next.value);
+        assertEquals(300, list.head.next.next.value);
+        assertEquals(100, list.tail.prev.prev.value);
+        assertEquals(200, list.tail.prev.value);
+        assertEquals(300, list.tail.value);
+        list.add(300);
+        list.add(300);
+        list.deleteDuplicates();
+        assertEquals(list.count(), 3);
+        assertEquals(100, list.head.value);
+        assertEquals(200, list.head.next.value);
+        assertEquals(300, list.head.next.next.value);
+        assertEquals(100, list.tail.prev.prev.value);
+        assertEquals(200, list.tail.prev.value);
+        assertEquals(300, list.tail.value);
+    }
+
+    @Test
+    void testDeleteDuplicates_Desc() {
+        OrderedList<Integer> list = new OrderedList<>(false);
+        list.add(100);
+        list.add(100);
+        list.add(100);
+        list.add(100);
+        list.add(100);
+        list.deleteDuplicates();
+        assertEquals(list.count(), 1);
+        assertEquals(100, list.head.value);
+        assertEquals(100, list.tail.value);
+        list.add(200);
+        list.add(200);
+        list.add(100);
+        list.add(300);
+        list.deleteDuplicates();
+        assertEquals(list.count(), 3);
+        assertEquals(300, list.head.value);
+        assertEquals(200, list.head.next.value);
+        assertEquals(100, list.head.next.next.value);
+        assertEquals(300, list.tail.prev.prev.value);
+        assertEquals(200, list.tail.prev.value);
+        assertEquals(100, list.tail.value);
+        list.add(300);
+        list.add(300);
+        list.deleteDuplicates();
+        assertEquals(list.count(), 3);
+        assertEquals(300, list.head.value);
+        assertEquals(200, list.head.next.value);
+        assertEquals(100, list.head.next.next.value);
+        assertEquals(300, list.tail.prev.prev.value);
+        assertEquals(200, list.tail.prev.value);
+        assertEquals(100, list.tail.value);
+    }
+
+    @Test
+    void testIsSubListExist_Asc() {
+        OrderedList<Integer> list = new OrderedList<>(true);
+        OrderedList<Integer> subList = new OrderedList<>(true);
+        list.add(1);
+        list.add(2);
+        subList.add(2);
+        subList.add(3);
+        subList.add(4);
+        assertFalse(list.isSubListExist(subList));
+        list.add(3);
+        list.add(4);
+        assertTrue(list.isSubListExist(subList));
+        subList.clear(true);
+        subList.add(2);
+        subList.add(3);
+        assertTrue(list.isSubListExist(subList));
+        subList.add(5);
+        assertFalse(list.isSubListExist(subList));
+    }
+
+    @Test
+    void testIsSubListExist_Desc() {
+        OrderedList<Integer> list = new OrderedList<>(false);
+        OrderedList<Integer> subList = new OrderedList<>(false);
+        list.add(1);
+        list.add(2);
+        subList.add(2);
+        subList.add(3);
+        subList.add(4);
+        assertFalse(list.isSubListExist(subList));
+        list.add(3);
+        list.add(4);
+        assertTrue(list.isSubListExist(subList));
+        subList.clear(false);
+        subList.add(2);
+        subList.add(3);
+        assertTrue(list.isSubListExist(subList));
+        subList.add(5);
+        assertFalse(list.isSubListExist(subList));
+    }
+
+    @Test
+    void testGetMostCommonValue() {
+        OrderedList<Integer> list = new OrderedList<>(true);
+        assertNull(list.getMostCommonValue());
+        list.add(1);
+        assertEquals(1, list.getMostCommonValue());
+        list.add(2);
+        assertEquals(1, list.getMostCommonValue());
+        list.add(3);
+        list.add(3);
+        list.add(4);
+        assertEquals(3, list.getMostCommonValue());
+        list.add(5);
+        list.add(5);
+        list.add(5);
+        assertEquals(5, list.getMostCommonValue());
+        list.add(3);
+        list.add(3);
+        assertEquals(3, list.getMostCommonValue());
+    }
+
+    @Test
+    void testGetIndex() {
+        OrderedList<Integer> list = new OrderedList<>(true);
+        assertEquals(-1, list.getIndex(123));
+        list.add(0);
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(5);
+        list.add(6);
+        assertEquals(-1, list.getIndex(10));
+        assertEquals(0, list.getIndex(0));
+        assertEquals(6, list.getIndex(6));
+        assertEquals(3, list.getIndex(3));
+        assertEquals(5, list.getIndex(5));
+        assertEquals(2, list.getIndex(2));
+    }
 }

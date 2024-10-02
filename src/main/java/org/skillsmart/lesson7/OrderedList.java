@@ -138,6 +138,125 @@ public class OrderedList<T>
         return _count;
     }
 
+    public void deleteDuplicates() {
+        for (Node<T> iNode = this.head; iNode.next != null; ) {
+            if (compare(iNode.value, iNode.next.value) == 0) {
+                _count -= 1;
+                iNode.next = iNode.next.next;
+                if (iNode.next != null) {
+                    iNode.next.prev = iNode;
+                } else { //это новый tail
+                    this.tail = iNode;
+                }
+            } else {
+                iNode = iNode.next;
+            }
+        }
+    }
+
+    public boolean isAscending() {
+        return _ascending;
+    }
+
+    public boolean isSubListExist(OrderedList<T> subList) {
+        if (this._count < subList._count) {
+            return false;
+        }
+        Node<T> subListNode = subList.head;
+        Node<T> mainListElement = find(subListNode.value);
+        if (mainListElement == null) {
+            return false;
+        }
+        for (; subListNode != null && mainListElement != null; subListNode = subListNode.next, mainListElement = mainListElement.next) {
+            if (compare(mainListElement.value, subListNode.value) != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public T getMostCommonValue() {
+        if (_count == 0) {
+            return null;
+        }
+        int cnt = 1;
+        int maxCnt = cnt;
+        T countValue = head.value;
+        T maxValue = head.value;
+        for (Node<T> iNode = head.next; iNode != null; iNode = iNode.next) {
+            if (compare(countValue, iNode.value) == 0) {
+                cnt++;
+            } else {
+                if (maxCnt < cnt) {
+                    maxValue = countValue;
+                    maxCnt = cnt;
+                }
+                countValue = iNode.value;
+                cnt = 1;
+            }
+        }
+        if (maxCnt < cnt) {
+            return countValue;
+        }
+        return maxValue;
+    }
+
+    public int getIndex(T value) {
+        //сразу отсечем "легкие" варианты:
+        if (_count == 0) {
+            return -1;
+        }
+        int compareHeadResult = compareByAsc(value, head.value);
+        if (compareHeadResult == 0) {
+            return 0;
+        }
+        int compareTailResult = compareByAsc(tail.value, value);
+        if (compareTailResult == 0) {
+            return _count - 1;
+        }
+        if (compareHeadResult < 0 || compareTailResult < 0) {
+            return -1;
+        }
+        //собственно поиск индекса. O(log(n)) сравнений, O(n) смещений
+        Node<T> iNode = head;
+        Node<T> leftNode = head;
+        int leftIndex = 0;
+        int rightIndex = _count - 1;
+        int cnt = (rightIndex - leftIndex) / 2;
+        for (; leftIndex < rightIndex; ) {
+            int i = 0;
+            for (; i < cnt; i++) {
+                iNode = iNode.next;
+            }
+            int compareResult = compareByAsc(value, iNode.value);
+            if (compareResult == 0) {
+                return i + leftIndex;
+            }
+            if (compareResult < 0) {
+                rightIndex = i + leftIndex;
+                iNode = leftNode;
+            } else {
+                leftIndex = i + leftIndex;
+                leftNode = iNode;
+            }
+            cnt = (rightIndex - leftIndex) / 2;
+        }
+        return -1;
+    }
+
+    /**
+     * Возвращает взаимное положение элементов в зависимости от _ascending на "линии" списка
+     * -1 - первый параметр лежит левее второго (т.е. он меньше при _ascending = true, больше при _ascending = false)
+     * 0 - равны
+     * 1 - первый параметр лежит правее второго (т.е. он больше при _ascending = true, меньше при _ascending = false)
+     */
+    private int compareByAsc(T firstValue, T secondValue) {
+        if (_ascending) {
+            return compare(firstValue, secondValue);
+        }
+        return compare(secondValue, firstValue);
+    }
+
     ArrayList<Node<T>> getAll()
     {
         ArrayList<Node<T>> r = new ArrayList<Node<T>>();
