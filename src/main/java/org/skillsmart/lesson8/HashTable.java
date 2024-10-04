@@ -1,5 +1,7 @@
 package org.skillsmart.lesson8;
 
+import java.util.Objects;
+
 public class HashTable
 {
     public int size;
@@ -56,8 +58,7 @@ public class HashTable
         int slot = hashFun(value);
         for (int i = 0; i <= step; i++) {
             for (; slot < size; slot += step) {
-                //if (Objects.equals(slots[slot], value)) return slot;
-                if (slots[slot] == value) return slot;
+                if (Objects.equals(slots[slot], value)) return slot;
                 if (slots[slot] == null) return -1;
             }
             slot -= size;
