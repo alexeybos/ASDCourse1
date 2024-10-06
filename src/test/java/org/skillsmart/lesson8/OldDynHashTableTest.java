@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DynHashTableTest {
+class OldDynHashTableTest {
 
     @Test
     void testMakeArray() {
-        DynHashTable tab = new DynHashTable(17, 3);
+        OldDynHashTable tab = new OldDynHashTable(17, 3);
         for (int i = 0; i < 13; i++) {
             tab.put(Integer.toString(i));
         }

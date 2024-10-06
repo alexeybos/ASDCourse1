@@ -8,6 +8,8 @@ public class DynArray<T>
     private static final int APPEND_MULTIPLIER = 2;
     private static final double REDUCE_MULTIPLIER = 1.5;
     private static final double EMPTY_RATIO = 0.5;
+    private int _initialCapacity;
+    //private double
     public T [] array;
     public int count;
     public int capacity;

@@ -1,26 +1,19 @@
 package org.skillsmart.lesson8;
 
-public class DynHashTable extends HashTable
-{
-    private static final float FULLNESS_RATIO = 0.75f;
+import org.skillsmart.lesson3.DynArray;
 
-    public DynHashTable(int sz, int stp)
-    {
-        super(sz, stp);
-    }
+public class DynHashTable {
 
-    public void makeArray(int _size) {
-        String[] oldArray = slots;
-        slots = new String[_size];
-        size = _size;
-        this.count = 0;
-        for(int i=0; i<_size; i++) slots[i] = null;
-        //пока придумалось только "в лоб"
-        for (String s : oldArray) {
-            if (s != null) {
-                super.put(s);
-            }
-        }
+    private static final double LOAD_RATIO = 0.75;
+    public DynArray<String> slots;
+    public int count;
+    public int step;
+
+    public DynHashTable(int stp) {
+        step = stp;
+        slots = new DynArray<>(String.class);
+        for(int i=0; i < slots.capacity; i++) slots.array[i] = null;
+        count = 0;
     }
 
     public int hashFun(String value)
@@ -30,19 +23,36 @@ public class DynHashTable extends HashTable
         for (byte aChar : chars) {
             sum += aChar;
         }
-        return sum%size;
+        return sum%slots.capacity;
     }
 
-    @Override
+    public int seekSlot(String value)
+    {
+        int slot = hashFun(value);
+        for (int i = 0; i <= step; i++) {
+            for (; slot < slots.capacity; slot += step) {
+                if (slots.array[slot] == null) return slot;
+            }
+            slot -= slots.capacity;
+        }
+        return -1;
+    }
+
     public int put(String value)
     {
-        if ((float) count / size > FULLNESS_RATIO) {
-            makeArray((size * 2) + 1);
+        if ((double) count / slots.capacity > LOAD_RATIO) {
+            expandArray();
         }
-        return super.put(value);
+        int slot = seekSlot(value);
+        if (slot == -1) return -1;
+        slots.array[slot] = value;
+        slots.count += 1;
+        count += 1;
+        return slot;
     }
 
+    private void expandArray() {
+        String [] tempArray = slots.array;
+        slots = new DynArray<>(String.class);
+    }
 }
-
-
-
