@@ -13,7 +13,7 @@ public class DynHashTable {
     public DynHashTable(int sz, int stp) {
         size = sz;
         step = stp;
-        slots = new DynArray<>(String.class);
+        slots = new DynArray<>(String.class, LOAD_RATIO, this::copyFunction);
         for(int i=0; i < slots.capacity; i++) slots.array[i] = null;
         count = 0;
     }
@@ -42,22 +42,16 @@ public class DynHashTable {
 
     public int put(String value)
     {
-        if ((double) count / slots.capacity > LOAD_RATIO) {
-            expandArray();
-        }
         int slot = seekSlot(value);
         if (slot == -1) return -1;
-        slots.array[slot] = value;
-        slots.count += 1;
+        slots.put(value, slot);
         count += 1;
         return slot;
     }
 
-    private void expandArray() {
-        String [] tempArray = slots.array;
-        slots.makeArray(slots.capacity * 2, true);
+    private void copyFunction(String[] oldArray) {
         count = 0;
-        for (String s : tempArray) {
+        for (String s : oldArray) {
             if (s != null) put(s);
         }
     }

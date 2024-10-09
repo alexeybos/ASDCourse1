@@ -28,46 +28,48 @@ public class MultiHashTable {
 
     public int hashFun0(String value)
     {
-        byte[] chars = value.getBytes();
-        int sum = 0;
-        for (byte aChar : chars) {
-            sum += aChar;
-        }
-        return sum%size;
+        return prepareValue(value) % size;
     }
 
     public int hashFun1(String value)
     {
-        byte[] chars = value.getBytes();
-        int sum = 0;
-        for (byte aChar : chars) {
-            sum += aChar;
-        }
-        return ((12 * sum + 29)%43) % size;
+        return ((12 * prepareValue(value) + 29)%43) % size;
     }
 
     public int hashFun2(String value)
     {
+        return ((3 * prepareValue(value) + 5)%7) % size;
+    }
+
+    private int prepareValue(String value) {
         byte[] chars = value.getBytes();
         int sum = 0;
         for (byte aChar : chars) {
             sum += aChar;
         }
-        return ((3 * sum + 5)%7) % size;
+        return sum;
     }
 
     public int seekSlot(String value)
     {
+        return slotCycle(value, null);
+    }
+
+    public int find(String value)
+    {
+        return slotCycle(value, value);
+    }
+
+    public int slotCycle(String value, String lookingFor) {
         int slot = -1;
-        //пробуем разными хэшами
-        for (int i = 0; i < hashFunctions.size(); i++) {
-            slot = hashFunctions.get(i).apply(value);
-            if (slots[slot] == null) return slot;
+        for (Function<String, Integer> hashFunction : hashFunctions) {
+            slot = hashFunction.apply(value);
+            if (Objects.equals(slots[slot], lookingFor)) return slot;
         }
-        //после третьего шагаем по таблице?
         for (int i = 0; i <= step; i++) {
             for (; slot < size; slot += step) {
-                if (slots[slot] == null) return slot;
+                if (Objects.equals(slots[slot], lookingFor)) return slot;
+                if (slots[slot] == null) return -1;
             }
             slot -= size;
         }
@@ -84,22 +86,5 @@ public class MultiHashTable {
         slots[slot] = value;
         count += 1;
         return slot;
-    }
-
-    public int find(String value)
-    {
-        int slot = -1;
-        for (int i = 0; i < hashFunctions.size(); i++) {
-            slot = hashFunctions.get(i).apply(value);
-            if (Objects.equals(slots[slot], value)) return slot;
-        }
-        for (int i = 0; i <= step; i++) {
-            for (; slot < size; slot += step) {
-                if (Objects.equals(slots[slot], value)) return slot;
-                if (slots[slot] == null) return -1;
-            }
-            slot -= size;
-        }
-        return -1;
     }
 }

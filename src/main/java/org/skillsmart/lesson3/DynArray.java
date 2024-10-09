@@ -1,6 +1,8 @@
 package org.skillsmart.lesson3;
 
 import java.lang.reflect.Array;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class DynArray<T>
 {
@@ -8,33 +10,44 @@ public class DynArray<T>
     private static final int APPEND_MULTIPLIER = 2;
     private static final double REDUCE_MULTIPLIER = 1.5;
     private static final double EMPTY_RATIO = 0.5;
-    private int _initialCapacity;
-    //private double
+    private double loadRatio;
+    private Consumer<T[]> copyFunction;
     public T [] array;
     public int count;
     public int capacity;
+
     Class clazz;
 
     public DynArray(Class clz)
     {
         clazz = clz;
         count = 0;
+        loadRatio = 0;
+        copyFunction = this::defaultCopyFunction;
+        makeArray(INITIAL_CAPACITY);
+    }
+
+    public DynArray(Class clz, double _loadRatio, Consumer<T[]> cpFunction)
+    {
+        clazz = clz;
+        count = 0;
+        loadRatio = _loadRatio;
+        copyFunction = cpFunction;
         makeArray(INITIAL_CAPACITY);
     }
 
     public void makeArray(int new_capacity)
     {
-        makeArray(new_capacity, false);
-    }
-
-    public void makeArray(int new_capacity, boolean noCopy)
-    {
         T[] oldArray = array;
         array = (T[]) Array.newInstance(this.clazz, new_capacity);
-        if (count > 0 && !noCopy) {
-            System.arraycopy(oldArray, 0, array, 0, count);
+        if (count > 0) {
+            copyFunction.accept(oldArray);
         }
         capacity = new_capacity;
+    }
+
+    private void defaultCopyFunction(T[] oldArray) {
+        System.arraycopy(oldArray, 0, array, 0, count);
     }
 
     public T getItem(int index)
@@ -52,6 +65,18 @@ public class DynArray<T>
         }
         array[count] = itm;
         count += 1;
+    }
+
+    public void put(T itm, int index) {
+        if (index < 0 || index > capacity) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        if (index == capacity || count == capacity) {
+            makeArray(capacity * APPEND_MULTIPLIER);
+        }
+        if (loadRatio > 0 && (double) count / capacity > loadRatio) makeArray(capacity * APPEND_MULTIPLIER);
+        if (array[index] == null && itm != null) count += 1;
+        array[index] = itm;
     }
 
     public void insert(T itm, int index)
