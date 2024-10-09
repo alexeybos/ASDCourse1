@@ -30,10 +30,11 @@ public class Lesson8 {
         for (String s : same) {
             table.put(s);
         }
-        System.out.println("collisionCount no salt = " + table.collisionCount);
+        System.out.println("collisionCount no salt = " + table.collisionCount); //много коллизий
+
         for (String s : same) {
             tableSalt.put(s);
         }
-        System.out.println("collisionCount salt = " + tableSalt.collisionCount);
+        System.out.println("collisionCount salt = " + tableSalt.collisionCount); //мало или нет коллизий
     }
 }
