@@ -24,9 +24,14 @@ public class DynArray<T>
 
     public void makeArray(int new_capacity)
     {
+        makeArray(new_capacity, false);
+    }
+
+    public void makeArray(int new_capacity, boolean noCopy)
+    {
         T[] oldArray = array;
         array = (T[]) Array.newInstance(this.clazz, new_capacity);
-        if (count > 0) {
+        if (count > 0 && !noCopy) {
             System.arraycopy(oldArray, 0, array, 0, count);
         }
         capacity = new_capacity;

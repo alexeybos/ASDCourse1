@@ -2,33 +2,47 @@ package org.skillsmart.lesson8;
 
 import java.util.Objects;
 
-public class HashTable
-{
+public class SaltHashTable {
+
+
     public int size;
     public int step;
     public String [] slots;
-
     public int count;
     public int collisionCount;
+    boolean saltMode;
 
-    public HashTable(int sz, int stp)
-    {
+
+    public SaltHashTable(int sz, int stp, boolean _mode) {
         size = sz;
         step = stp;
         slots = new String[size];
         for(int i=0; i<size; i++) slots[i] = null;
         count = 0;
         collisionCount = 0;
+        saltMode = _mode;
+        //saltPhrase = "saltPhrase" + (new Random()).nextInt(10000);
     }
 
     public int hashFun(String value)
     {
-        byte[] chars = value.getBytes();
-        int sum = 0;
-        for (byte aChar : chars) {
-            sum += aChar;
+        //соль статическая, т.к. я не придумал, как эффективно хранить соль для value - получается усложнение
+        //структуры, которая "съедает" все преимущества HashTable
+        if (saltMode) {
+            value = "salt" + value + "Phrase";
         }
-        return sum%size;
+        byte[] chars = value.getBytes();
+        int sum1 = 0;
+        int sum2 = 0;
+        int i;
+        for (i = 0; i < chars.length / 2; i++) {
+            sum1 += chars[i];
+        }
+        for (; i < chars.length; i++) {
+            sum2 += chars[i];
+        }
+
+        return ((6*sum1 + 12)%41 + (3*sum2 + 5)%7)%size;
     }
 
     public int seekSlot(String value)
@@ -69,6 +83,3 @@ public class HashTable
         return -1;
     }
 }
-
-
-

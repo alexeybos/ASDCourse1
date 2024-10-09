@@ -8,8 +8,10 @@ public class DynHashTable {
     public DynArray<String> slots;
     public int count;
     public int step;
+    public int size;
 
-    public DynHashTable(int stp) {
+    public DynHashTable(int sz, int stp) {
+        size = sz;
         step = stp;
         slots = new DynArray<>(String.class);
         for(int i=0; i < slots.capacity; i++) slots.array[i] = null;
@@ -53,6 +55,10 @@ public class DynHashTable {
 
     private void expandArray() {
         String [] tempArray = slots.array;
-        slots = new DynArray<>(String.class);
+        slots.makeArray(slots.capacity * 2, true);
+        count = 0;
+        for (String s : tempArray) {
+            if (s != null) put(s);
+        }
     }
 }

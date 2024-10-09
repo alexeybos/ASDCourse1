@@ -4,26 +4,18 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class OldDynHashTableTest {
+class DynHashTableTest {
 
     @Test
     void testMakeArray() {
-        OldDynHashTable tab = new OldDynHashTable(17, 3);
+        DynHashTable tab = new DynHashTable(17, 3);
         for (int i = 0; i < 13; i++) {
             tab.put(Integer.toString(i));
         }
         assertEquals(13, tab.count);
-        assertEquals(17, tab.size);
+        assertEquals(16, tab.slots.capacity);
         tab.put("new");
         assertEquals(14, tab.count);
-        assertEquals(35, tab.size);
-    }
-
-    @Test
-    void hashFun() {
-    }
-
-    @Test
-    void put() {
+        assertEquals(32, tab.slots.capacity);
     }
 }
