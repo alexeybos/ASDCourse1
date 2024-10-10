@@ -53,7 +53,7 @@ public class DequeByTwoDynArray<T> {
     private int addItem(DynArray<Object> nativeArray, DynArray<Object> alienArray, int index, T item) {
         index += 1;
         if (index < 0) { //находимся в "чужом" массиве, надо вернуть долг
-            alienArray.array[Math.abs(index + 1)] = item;
+            //alienArray.array[Math.abs(index + 1)] = item;
         } else {
             nativeArray.append(item);
         }

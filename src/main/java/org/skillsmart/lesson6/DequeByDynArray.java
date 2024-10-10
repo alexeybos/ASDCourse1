@@ -17,7 +17,7 @@ public class DequeByDynArray<T> {
         tailIndex = 0;
     }
 
-    public void addFront(T item)
+    /*public void addFront(T item)
     {
         if (size == 0) { //будет первый элемент
             addIntoEmptyArray(item);
@@ -121,5 +121,5 @@ public class DequeByDynArray<T> {
     public int size()
     {
         return this.size;
-    }
+    }*/
 }

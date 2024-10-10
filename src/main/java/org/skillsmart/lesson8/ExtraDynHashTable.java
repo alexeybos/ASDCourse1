@@ -13,12 +13,12 @@ public class ExtraDynHashTable {
     public ExtraDynHashTable(int sz, int stp) {
         size = sz;
         step = stp;
-        slots = new DynArray<>(String.class, LOAD_RATIO, this::copyFunction);
-        for(int i=0; i < slots.capacity; i++) slots.array[i] = null;
+        //slots = new DynArray<>(String.class, LOAD_RATIO, this::copyFunction);
+        //for(int i=0; i < slots.capacity; i++) slots.array[i] = null;
         count = 0;
     }
 
-    public int hashFun(String value)
+    /*public int hashFun(String value)
     {
         byte[] chars = value.getBytes();
         int sum = 0;
@@ -38,7 +38,7 @@ public class ExtraDynHashTable {
             slot -= slots.capacity;
         }
         return -1;
-    }
+    }*//*
 
     public int put(String value)
     {
@@ -54,5 +54,5 @@ public class ExtraDynHashTable {
         for (String s : oldArray) {
             if (s != null) put(s);
         }
-    }
+    }*/
 }

@@ -11,9 +11,9 @@ public class DynArray<T>
     private static final double EMPTY_RATIO = 0.5;
     private double loadRatio;
     private Consumer<T[]> copyFunction;
-    public T [] array;
-    public int count;
-    public int capacity;
+    private T [] array;
+    private int count;
+    private int capacity;
 
     Class clazz;
 

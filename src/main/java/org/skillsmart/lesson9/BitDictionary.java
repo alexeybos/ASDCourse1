@@ -9,6 +9,7 @@ class BitDictionary<T>
     public int size;
     public int keySize;
     public String [] slots;
+    public boolean [] statuses;
     public T [] values;
 
     public BitDictionary(int sz, int keySz, Class clazz)
@@ -22,7 +23,7 @@ class BitDictionary<T>
     public int hashFun(String key)
     {
         int iKey = Integer.parseInt(key, 2);
-        return iKey & (size- 1);
+        return iKey & (size - 1);
     }
 
     public boolean isKey(String key)
@@ -40,6 +41,7 @@ class BitDictionary<T>
             int newSlot = seekSlot(key);
             slots[newSlot] = key;
             values[newSlot] = value;
+            statuses[newSlot] = true;
             return;
         }
         values[slot] = value;
@@ -57,6 +59,10 @@ class BitDictionary<T>
         int slot = find(key);
         if (slot == -1) return null;
         return values[slot];
+    }
+
+    public void delete() {
+
     }
 
     private int seekSlot(String key)
