@@ -4,18 +4,18 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DynHashTableTest {
+class ExtraDynHashTableTest {
 
     @Test
-    void put() {
-        DynHashTable tab = new DynHashTable(3);
-        for (int i = 0; i < 16; i++) {
+    void testMakeArray() {
+        ExtraDynHashTable tab = new ExtraDynHashTable(17, 3);
+        for (int i = 0; i < 13; i++) {
             tab.put(Integer.toString(i));
         }
-        assertEquals(16, tab.count);
+        assertEquals(13, tab.count);
         assertEquals(16, tab.slots.capacity);
         tab.put("new");
-        assertEquals(17, tab.count);
+        assertEquals(14, tab.count);
         assertEquals(32, tab.slots.capacity);
     }
 }

@@ -2,15 +2,18 @@ package org.skillsmart.lesson8;
 
 import org.skillsmart.lesson3.DynArray;
 
-public class DynHashTable {
+public class ExtraDynHashTable {
 
+    private static final double LOAD_RATIO = 0.75;
     public DynArray<String> slots;
     public int count;
     public int step;
+    public int size;
 
-    public DynHashTable(int stp) {
+    public ExtraDynHashTable(int sz, int stp) {
+        size = sz;
         step = stp;
-        slots = new DynArray<>(String.class);
+        slots = new DynArray<>(String.class, LOAD_RATIO, this::copyFunction);
         for(int i=0; i < slots.capacity; i++) slots.array[i] = null;
         count = 0;
     }
@@ -39,18 +42,17 @@ public class DynHashTable {
 
     public int put(String value)
     {
-        if (count == slots.capacity) { //сейчас массив расширится
-            String[] tempValue = slots.array;
-            slots.append(value);
-            for (int i = 0; i < count + 1; i++) slots.array[i] = null;
-            slots.count = 0;
-            //перехешируем
-            for (int i = 0; i < count; i++) slots.put(tempValue[i], seekSlot(tempValue[i]));
-        }
         int slot = seekSlot(value);
         if (slot == -1) return -1;
         slots.put(value, slot);
         count += 1;
         return slot;
+    }
+
+    private void copyFunction(String[] oldArray) {
+        count = 0;
+        for (String s : oldArray) {
+            if (s != null) put(s);
+        }
     }
 }

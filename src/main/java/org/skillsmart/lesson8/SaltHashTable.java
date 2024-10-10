@@ -1,13 +1,26 @@
 package org.skillsmart.lesson8;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class SaltHashTable {
 
+    private static class Salt {
+        public String value;
+        public String salt;
+        public Salt(String _val, String _salt) {
+            value = _val;
+            salt = _salt;
+        }
+    }
 
+    private final List<Salt> salt;
+    public String [] slots;
     public int size;
     public int step;
-    public String [] slots;
+
     public int count;
     public int collisionCount;
     boolean saltMode;
@@ -21,17 +34,12 @@ public class SaltHashTable {
         count = 0;
         collisionCount = 0;
         saltMode = _mode;
-        //saltPhrase = "saltPhrase" + (new Random()).nextInt(10000);
+        salt = new ArrayList<>(size);
     }
 
     public int hashFun(String value)
     {
-        //соль статическая, т.к. я не придумал, как эффективно хранить соль для value - получается усложнение
-        //структуры, которая "съедает" все преимущества HashTable
-        if (saltMode) {
-            value = "salt" + value + "Phrase";
-        }
-        byte[] chars = value.getBytes();
+        /*byte[] chars = value.getBytes();
         int sum1 = 0;
         int sum2 = 0;
         int i;
@@ -42,26 +50,29 @@ public class SaltHashTable {
             sum2 += chars[i];
         }
 
-        return ((6*sum1 + 12)%41 + (3*sum2 + 5)%7)%size;
+        return ((6*sum1 + 12)%41 + (3*sum2 + 5)%7)%size;*/
+        byte[] chars = value.getBytes();
+        int sum = 0;
+        for (byte aChar : chars) {
+            sum += aChar;
+        }
+        return sum%size;
     }
 
-    public int seekSlot(String value)
-    {
-        int slot = hashFun(value);
-        for (int i = 0; i <= step; i++) {
-            for (; slot < size; slot += step) {
-                if (slots[slot] == null) return slot;
-                collisionCount += 1;
-            }
-            slot -= size;
-        }
-        return -1;
+    private String generateSalt(String value) {
+        Random rn = new Random();
+        String randomSalt = "saltPhrase" + rn.nextInt(10000);
+        salt.add(new Salt(value, randomSalt));
+        return value + randomSalt;
     }
 
     public int put(String value)
     {
         if (count == size) {
             return -1;
+        }
+        if (saltMode) {
+            value = generateSalt(value);
         }
         int slot = seekSlot(value);
         if (slot == -1) return -1;
@@ -70,16 +81,38 @@ public class SaltHashTable {
         return slot;
     }
 
+    public int seekSlot(String value)
+    {
+        return slotCycle(value, null);
+    }
+
     public int find(String value)
     {
+        if (saltMode) {
+            value = value + findSalt(value);
+        }
+        return slotCycle(value, value);
+    }
+
+    private int slotCycle(String value, String seekValue) {
         int slot = hashFun(value);
         for (int i = 0; i <= step; i++) {
             for (; slot < size; slot += step) {
-                if (Objects.equals(slots[slot], value)) return slot;
+                if (Objects.equals(slots[slot], seekValue)) return slot;
                 if (slots[slot] == null) return -1;
+                if (seekValue == null) collisionCount += 1;
             }
             slot -= size;
         }
         return -1;
+    }
+
+    private String findSalt(String value) {
+        for (Salt item : salt) {
+            if (Objects.equals(item.value, value)) {
+                return item.salt;
+            }
+        }
+        return null;
     }
 }
