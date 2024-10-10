@@ -75,6 +75,7 @@ public class DynArray<T>
         }
         if (loadRatio > 0 && (double) count / capacity > loadRatio) makeArray(capacity * APPEND_MULTIPLIER);
         if (array[index] == null && itm != null) count += 1;
+        if (array[index] != null && itm == null) count -= 1;
         array[index] = itm;
     }
 

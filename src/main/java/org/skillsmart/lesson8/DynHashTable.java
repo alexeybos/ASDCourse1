@@ -41,9 +41,9 @@ public class DynHashTable {
     public int put(String value)
     {
         if (count == size) { //сейчас массив расширится
-            String[] tempValue = new String[size];
+            String[] tempValue = new String[size + 1];
             slots.append(value);
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < size + 1; i++) {
                 tempValue[i] = slots.getItem(i);
                 slots.put(null, i);
             }
