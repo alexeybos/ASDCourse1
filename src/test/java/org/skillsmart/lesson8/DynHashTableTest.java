@@ -9,13 +9,13 @@ class DynHashTableTest {
     @Test
     void put() {
         DynHashTable tab = new DynHashTable(3);
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 13; i++) {
             tab.put(Integer.toString(i));
         }
-        assertEquals(16, tab.count);
-        //assertEquals(16, tab.slots.capacity);
+        assertEquals(13, tab.count);
+        assertEquals(3, tab.slots.getBufferSize());
         tab.put("new");
-        assertEquals(17, tab.count);
-        //assertEquals(32, tab.slots.capacity);
+        assertEquals(14, tab.count);
+        assertEquals(18, tab.slots.getBufferSize());
     }
 }

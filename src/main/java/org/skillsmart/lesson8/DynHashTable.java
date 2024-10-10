@@ -7,12 +7,10 @@ public class DynHashTable {
     public DynArray<String> slots;
     public int count;
     public int step;
-    public int size;
 
     public DynHashTable(int stp) {
         step = stp;
         slots = new DynArray<>(String.class);
-        size = slots.getBufferSize();
         count = 0;
     }
 
@@ -23,33 +21,31 @@ public class DynHashTable {
         for (byte aChar : chars) {
             sum += aChar;
         }
-        return sum%size;
+        return sum%getSize();
     }
 
     public int seekSlot(String value)
     {
         int slot = hashFun(value);
         for (int i = 0; i <= step; i++) {
-            for (; slot < size; slot += step) {
+            for (; slot < getSize(); slot += step) {
                 if (slots.getItem(slot) == null) return slot;
             }
-            slot -= size;
+            slot -= getSize();
         }
         return -1;
     }
 
     public int put(String value)
     {
-        if ((double) slots.getBufferSize() / size < 0.2) { //надо расширять и пересчитывать хеши
+        if ((double) slots.getBufferSize() / (count + slots.getBufferSize()) < 0.2) { //надо расширять и пересчитывать хеши
             slots.expandArray();
-            String[] tempValue = new String[size + 1];
-            slots.append(value);
-            for (int i = 0; i < size + 1; i++) {
+            String[] tempValue = new String[count];
+            for (int i = 0; i < count; i++) {
                 tempValue[i] = slots.getItem(i);
                 slots.put(null, i);
             }
             //перехешируем
-            size = size * 2;
             for (int i = 0; i < count; i++) slots.put(tempValue[i], seekSlot(tempValue[i]));
         }
         int slot = seekSlot(value);
@@ -57,5 +53,9 @@ public class DynHashTable {
         slots.put(value, slot);
         count += 1;
         return slot;
+    }
+
+    public int getSize() {
+        return count + slots.getBufferSize();
     }
 }
