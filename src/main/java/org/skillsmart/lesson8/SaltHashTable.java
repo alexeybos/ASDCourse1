@@ -39,18 +39,6 @@ public class SaltHashTable {
 
     public int hashFun(String value)
     {
-        /*byte[] chars = value.getBytes();
-        int sum1 = 0;
-        int sum2 = 0;
-        int i;
-        for (i = 0; i < chars.length / 2; i++) {
-            sum1 += chars[i];
-        }
-        for (; i < chars.length; i++) {
-            sum2 += chars[i];
-        }
-
-        return ((6*sum1 + 12)%41 + (3*sum2 + 5)%7)%size;*/
         byte[] chars = value.getBytes();
         int sum = 0;
         for (byte aChar : chars) {
