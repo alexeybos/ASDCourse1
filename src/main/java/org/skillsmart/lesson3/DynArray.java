@@ -115,6 +115,14 @@ public class DynArray<T>
         count -= 1;
     }
 
+    public int getBufferSize() {
+        return capacity - count;
+    }
+
+    public void expandArray() {
+        makeArray(capacity * APPEND_MULTIPLIER);
+    }
+
     private void shrinkIfNeed() {
         if (capacity == INITIAL_CAPACITY) {
             return;

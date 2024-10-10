@@ -12,7 +12,7 @@ public class DynHashTable {
     public DynHashTable(int stp) {
         step = stp;
         slots = new DynArray<>(String.class);
-        size = 16; //т.к. массив создается фиксированного начального размера 16
+        size = slots.getBufferSize();
         count = 0;
     }
 
@@ -40,7 +40,8 @@ public class DynHashTable {
 
     public int put(String value)
     {
-        if (count == size) { //сейчас массив расширится
+        if ((double) slots.getBufferSize() / size < 0.2) { //надо расширять и пересчитывать хеши
+            slots.expandArray();
             String[] tempValue = new String[size + 1];
             slots.append(value);
             for (int i = 0; i < size + 1; i++) {
