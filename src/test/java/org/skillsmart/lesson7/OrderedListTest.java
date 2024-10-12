@@ -350,8 +350,11 @@ class OrderedListTest {
         OrderedList<Integer> list = new OrderedList<>(true);
         assertEquals(-1, list.getIndex(123));
         list.add(0);
+        assertEquals(0, list.getIndex(0));
         list.add(1);
+        assertEquals(1, list.getIndex(1));
         list.add(2);
+        assertEquals(2, list.getIndex(2));
         list.add(3);
         list.add(4);
         list.add(5);
@@ -362,5 +365,19 @@ class OrderedListTest {
         assertEquals(3, list.getIndex(3));
         assertEquals(5, list.getIndex(5));
         assertEquals(2, list.getIndex(2));
+    }
+
+    @Test
+    void testGetIndex_ThreeValues() {
+        OrderedList<Integer> list = new OrderedList<>(true);
+        assertEquals(-1, list.getIndex(123));
+        list.add(1);
+        assertEquals(0, list.getIndex(1));
+        assertEquals(-1, list.getIndex(2));
+        list.add(3);
+        assertEquals(1, list.getIndex(3));
+        assertEquals(-1, list.getIndex(2));
+        list.add(2);
+        assertEquals(1, list.getIndex(2));
     }
 }

@@ -5,30 +5,34 @@ import java.util.Objects;
 
 class BitDictionary<T>
 {
-    private static final int STEP = 3;
+    /**
+     * Алгоритм
+     * берем ключ, берем первые 4 бита - массив из 15 баскетов
+     * следующие 4 бита - адресация внутри баскета
+     * следующие 4 бита - адресация внутри баскета...
+     */
+    private static final int STORAGE_CAPACITY = 15;
     public int size;
     public int keySize;
-    public String [] slots;
-    public boolean [] statuses;
-    public T [] values;
+    public Object [] baskets;
 
-    public BitDictionary(int sz, int keySz, Class clazz)
+
+    public BitDictionary(int keySz, Class clazz)
     {
-        size = sz;
         keySize =keySz;
-        slots = new String[size];
-        values = (T[]) Array.newInstance(clazz, this.size);
+        baskets = prepareBaskets(keySz, clazz);
     }
 
-    public int hashFun(String key)
-    {
-        int iKey = Integer.parseInt(key, 2);
-        return iKey & (size - 1);
-    }
-
-    public boolean isKey(String key)
-    {
-        return !(find(key) < 0);
+    private Object[] prepareBaskets(int keySz, Class clazz) {
+        if (keySz < 5) {
+            return (T[]) Array.newInstance(clazz, STORAGE_CAPACITY);
+        }
+        //рекурсивно
+        Object[] basket = (Object[]) Array.newInstance(Object.class, STORAGE_CAPACITY);
+        for (int i = 0; i < STORAGE_CAPACITY; i++) {
+            basket[i] = prepareBaskets(keySz - 4, clazz);
+        }
+        return basket;
     }
 
     public void put(String key, T value)
@@ -36,19 +40,9 @@ class BitDictionary<T>
         if (isKeySizeNotValid(key)) {
             throw new IllegalArgumentException("Key size should be " + keySize);
         }
-        int slot = find(key);
-        if (slot == -1) {
-            int newSlot = seekSlot(key);
-            slots[newSlot] = key;
-            values[newSlot] = value;
-            statuses[newSlot] = true;
-            return;
-        }
-        values[slot] = value;
-    }
-
-    private boolean isKeySizeNotValid(String key) {
-        return key.length() != keySize;
+        int iKey = Integer.parseInt(key, 2);
+        T[] basket = getBasket(iKey);
+        basket[(iKey >> (keySize - 4)) & STORAGE_CAPACITY] = value;
     }
 
     public T get(String key)
@@ -56,34 +50,26 @@ class BitDictionary<T>
         if (isKeySizeNotValid(key)) {
             return null;
         }
-        int slot = find(key);
-        if (slot == -1) return null;
-        return values[slot];
+        int iKey = Integer.parseInt(key, 2);
+        T[] basket = getBasket(iKey);
+        return basket[(iKey >> (keySize - 4)) & STORAGE_CAPACITY];
     }
 
-    public void delete() {
-
-    }
-
-    private int seekSlot(String key)
-    {
-        return dictCycle(key, null);
-    }
-    public int find(String key)
-    {
-        return dictCycle(key, key);
-    }
-
-    private int dictCycle(String key, String seekValue) {
-        int slot = hashFun(key);
-        for (int i = 0; i <= STEP; i++) {
-            for (; slot < size; slot += STEP) {
-                if (Objects.equals(slots[slot], seekValue)) return slot;
-                if (slots[slot] == null) return -1;
-            }
-            slot -= size;
+    private T[] getBasket(int iKey) {
+        int mask = STORAGE_CAPACITY;
+        Object[] basket = baskets;
+        for (; iKey > mask; iKey = iKey>>4) {
+            basket = (Object[]) basket[iKey & mask];
         }
-        return -1;
+        return (T[]) basket;
+    }
+
+    private boolean isKeySizeNotValid(String key) {
+        return key.length() != keySize;
+    }
+
+    public void delete(String key) {
+        put(key, null);
     }
 }
 

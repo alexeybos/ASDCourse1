@@ -8,7 +8,7 @@ class BitDictionaryTest {
 
     @Test
     void testGet() {
-        BitDictionary<String> dict = new BitDictionary<>(19, 8, String.class);
+        BitDictionary<String> dict = new BitDictionary<>(8, String.class);
         dict.put("01010101", "value1");
         dict.put("01011101", "value2");
         dict.put("01010101", "value3");

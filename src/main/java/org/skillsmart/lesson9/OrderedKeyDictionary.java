@@ -2,72 +2,59 @@ package org.skillsmart.lesson9;
 
 import org.skillsmart.lesson7.OrderedList;
 
-import java.util.Objects;
+import java.lang.reflect.Array;
 
 public class OrderedKeyDictionary<T> {
 
-    private static final int STEP = 3;
     public int size;
-    public String [] slots;
-    public T [] values;
-    public OrderedList<T> orderedKeys;
+    public OrderedList<String> orderedKeys;
+    public T[] values;
 
-    public OrderedKeyDictionary() {
+    public OrderedKeyDictionary(int sz, Class clazz) {
+        size = sz;
         orderedKeys = new OrderedList<>(true);
-    }
-
-    public int hashFun(String key)
-    {
-        byte[] chars = key.getBytes();
-        int sum = 0;
-        for (byte aChar : chars) {
-            sum += aChar;
-        }
-        return sum%size;
+        values = (T[]) Array.newInstance(clazz, sz);
     }
 
     public boolean isKey(String key)
     {
-        return !(find(key) < 0);
+        return orderedKeys.getIndex(key) != -1;
     }
 
     public void put(String key, T value)
     {
-        int slot = find(key);
-        if (slot == -1) {
-            int newSlot = seekSlot(key);
-            slots[newSlot] = key;
-            values[newSlot] = value;
+        int slot = orderedKeys.getIndex(key);
+        if (slot != -1) { //key уже есть, просто меняем value
+            values[slot] = value;
             return;
+        }
+        //(размещаем key, получаем его индекс, сдвигаем все values "выше" индекса).
+        orderedKeys.add(key);
+        slot = orderedKeys.getIndex(key);
+        for (int i = slot; i < orderedKeys.count(); i++) {
+            values[slot + 1] = values[slot];
         }
         values[slot] = value;
     }
 
     public T get(String key)
     {
-        int slot = find(key);
+        int slot = orderedKeys.getIndex(key);
         if (slot == -1) return null;
         return values[slot];
     }
 
-    private int seekSlot(String key)
-    {
-        return dictCycle(key, null);
-    }
-    public int find(String key)
-    {
-        return dictCycle(key, key);
-    }
-
-    private int dictCycle(String key, String seekValue) {
-        int slot = hashFun(key);
-        for (int i = 0; i <= STEP; i++) {
-            for (; slot < size; slot += STEP) {
-                if (Objects.equals(slots[slot], seekValue)) return slot;
-                if (slots[slot] == null) return -1;
-            }
-            slot -= size;
+    public void delete(String key) {
+        //находим индекс, штатно удаляем key, сдвигаем все values "вниз"
+        int slot = orderedKeys.getIndex(key);
+        if (slot == -1) return;
+        orderedKeys.delete(key);
+        T descentValue = null;
+        for (int i = orderedKeys.count(); i >= slot; i--) {
+            T temp = values[i];
+            values[i] = descentValue;
+            descentValue = temp;
         }
-        return -1;
     }
 }
+

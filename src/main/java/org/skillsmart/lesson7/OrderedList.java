@@ -1,5 +1,7 @@
 package org.skillsmart.lesson7;
 
+import org.skillsmart.lesson9.KeyValuePair;
+
 import java.util.*;
 
 
@@ -42,6 +44,15 @@ public class OrderedList<T>
         }
         if (v1 instanceof String && v2 instanceof String) {
             int result = ((String) v1).trim().compareTo(((String) v2).trim());
+            if (result < 0) {
+                return -1;
+            }
+            if (result > 0) {
+                return 1;
+            }
+        }
+        if (v1 instanceof KeyValuePair<?> && v2 instanceof KeyValuePair<?>) {
+            int result = (((KeyValuePair<?>) v1).key).trim().compareTo((((KeyValuePair<?>) v2).key).trim());
             if (result < 0) {
                 return -1;
             }
@@ -222,10 +233,10 @@ public class OrderedList<T>
         Node<T> leftNode = head;
         int leftIndex = 0;
         int rightIndex = _count - 1;
-        int cnt = (rightIndex - leftIndex) / 2;
-        for (; leftIndex < rightIndex; ) {
+        int mid = (rightIndex - leftIndex) / 2;
+        for (; leftIndex <= rightIndex; ) {
             int i = 0;
-            for (; i < cnt; i++) {
+            for (; i < mid; i++) {
                 iNode = iNode.next;
             }
             int compareResult = compareByAsc(value, iNode.value);
@@ -233,13 +244,14 @@ public class OrderedList<T>
                 return i + leftIndex;
             }
             if (compareResult < 0) {
-                rightIndex = i + leftIndex;
+                rightIndex = i + leftIndex - 1;
                 iNode = leftNode;
             } else {
-                leftIndex = i + leftIndex;
-                leftNode = iNode;
+                leftIndex = i + leftIndex + 1;
+                leftNode = iNode.next;
+                iNode = iNode.next;
             }
-            cnt = (rightIndex - leftIndex) / 2;
+            mid = (rightIndex - leftIndex) / 2;
         }
         return -1;
     }
