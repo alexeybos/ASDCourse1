@@ -2,6 +2,8 @@ package org.skillsmart.lesson10;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PowerSetTest {
@@ -228,6 +230,39 @@ class PowerSetTest {
         set2.put("112");
         set2.put("11112");
         assertFalse(set1.equals(set2));
+    }
+
+    @Test
+    void testCartesianProduct() {
+        PowerSet set1 = new PowerSet();
+        PowerSet set2 = new PowerSet();
+        set1.put("l1");
+        set1.put("l2");
+        set1.put("l3");
+
+        set2.put("r1");
+        set2.put("r2");
+        set2.put("r3");
+        List<List<String>> result = set1.cartesianProduct(set2);
+        assertEquals(9, result.size());
+        assertEquals("l1", result.get(0).get(0));
+        assertEquals("r1", result.get(0).get(1));
+        assertEquals("l1", result.get(1).get(0));
+        assertEquals("r2", result.get(1).get(1));
+        assertEquals("l1", result.get(2).get(0));
+        assertEquals("r3", result.get(2).get(1));
+        assertEquals("l2", result.get(3).get(0));
+        assertEquals("r1", result.get(3).get(1));
+        assertEquals("l2", result.get(4).get(0));
+        assertEquals("r2", result.get(4).get(1));
+        assertEquals("l2", result.get(5).get(0));
+        assertEquals("r3", result.get(5).get(1));
+        assertEquals("l3", result.get(6).get(0));
+        assertEquals("r1", result.get(6).get(1));
+        assertEquals("l3", result.get(7).get(0));
+        assertEquals("r2", result.get(7).get(1));
+        assertEquals("l3", result.get(8).get(0));
+        assertEquals("r3", result.get(8).get(1));
     }
 
     @Test

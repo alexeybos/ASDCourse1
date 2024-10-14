@@ -269,13 +269,25 @@ public class OrderedList<T>
         return compare(secondValue, firstValue);
     }
 
-    ArrayList<Node<T>> getAll()
+    ArrayList<Node<T>> getAllNodes()
     {
         ArrayList<Node<T>> r = new ArrayList<Node<T>>();
         Node<T> node = head;
         while(node != null)
         {
             r.add(node);
+            node = node.next;
+        }
+        return r;
+    }
+
+    public ArrayList<T> getAll()
+    {
+        ArrayList<T> r = new ArrayList<T>();
+        Node<T> node = head;
+        while(node != null)
+        {
+            r.add(node.value);
             node = node.next;
         }
         return r;

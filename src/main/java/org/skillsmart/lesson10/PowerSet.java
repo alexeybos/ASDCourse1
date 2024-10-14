@@ -4,41 +4,41 @@ import java.util.*;
 
 public class PowerSet
 {
-    public Map<String, Object> set;
+    public Map<String, Object> innerSet;
 
     public PowerSet()
     {
-        set = new HashMap<>(20000);
+        innerSet = new HashMap<>(20000);
     }
 
     public int size()
     {
-        return set.size();
+        return innerSet.size();
     }
 
 
     public void put(String value)
     {
-        set.put(value, 0);
+        innerSet.put(value, 0);
     }
 
     public boolean get(String value)
     {
-        return set.containsKey(value);
+        return innerSet.containsKey(value);
     }
 
     public boolean remove(String value)
     {
-        boolean result = set.containsKey(value);
-        set.remove(value);
+        boolean result = innerSet.containsKey(value);
+        innerSet.remove(value);
         return result;
     }
 
     public PowerSet intersection(PowerSet set2)
     {
         PowerSet result = new PowerSet();
-        for (String val: set2.set.keySet()) {
-            if (set.containsKey(val)) {
+        for (String val: set2.innerSet.keySet()) {
+            if (innerSet.containsKey(val)) {
                 result.put(val);
             }
         }
@@ -48,10 +48,10 @@ public class PowerSet
     public PowerSet union(PowerSet set2)
     {
         PowerSet result = new PowerSet();
-        for (String val: set.keySet()) {
+        for (String val: innerSet.keySet()) {
             result.put(val);
         }
-        for (String val: set2.set.keySet()) {
+        for (String val: set2.innerSet.keySet()) {
             result.put(val);
         }
         return result;
@@ -60,8 +60,8 @@ public class PowerSet
     public PowerSet difference(PowerSet set2)
     {
         PowerSet result = new PowerSet();
-        for (String val: set.keySet()) {
-            if (!set2.set.containsKey(val)) {
+        for (String val: innerSet.keySet()) {
+            if (!set2.innerSet.containsKey(val)) {
                 result.put(val);
             }
         }
@@ -76,11 +76,29 @@ public class PowerSet
 
     public boolean equals(PowerSet set2)
     {
-        if (set.size() != set2.size()) {
+        if (innerSet.size() != set2.size()) {
             return false;
         }
         PowerSet diff = set2.difference(this);
         return diff.size() == 0;
+    }
+
+    /**
+     * Не получилось однозначно решить как представить результат произведения.
+     * Вообще, по-хорошему, в итоге должно быть Set<List<String>> (а по факту вообще Set<List<T>>). Но шаблон класса не использует генерики...
+     * В данном классе реализовал результат как List<List<String>>
+     * Отдельно попробовал сделать метод в классе GenericPowerSet {@link GenericPowerSet}
+     */
+    public List<List<String>> cartesianProduct(PowerSet set2) {
+        List<List<String>> result = new ArrayList<>();
+        for (String elem1 :
+                this.innerSet.keySet()) {
+            for (String elem2 :
+                    set2.innerSet.keySet()) {
+                result.add(new ArrayList<>(Arrays.asList(elem1, elem2)));
+            }
+        }
+        return result;
     }
 }
 
