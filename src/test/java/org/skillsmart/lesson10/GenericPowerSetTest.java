@@ -2,6 +2,8 @@ package org.skillsmart.lesson10;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,5 +23,6 @@ class GenericPowerSetTest {
         set2.put("r3");
         GenericPowerSet<List<String>> result = set1.cartesianProduct(set2);
         assertEquals(9, result.size());
+        assertTrue(result.get(new ArrayList<>(Arrays.asList("l1", "r1"))));
     }
 }
