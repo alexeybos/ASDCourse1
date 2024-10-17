@@ -7,26 +7,32 @@ import java.util.*;
 public class Bag {
 
     public List<String> values;
+    public Map<String, Integer> frequencies;
 
     public Bag() {
         values = new ArrayList<>();
+        frequencies = new HashMap<>();
     }
 
     public void put(String value) {
+        frequencies.merge(value, 1, Integer::sum);
         values.add(value);
     }
 
     public void delete(String value) {
         values.remove(value);
+        Integer freq = frequencies.get(value);
+        if (freq != null) {
+            frequencies.put(value, Math.max(0, freq - 1));
+        }
     }
 
     public Map<String, Integer> elemFrequency() {
-        Map<String, Integer> result = new HashMap<>();
-        for (String value : values) {
-            Integer cnt = result.getOrDefault(value, 0);
-            result.put(value, cnt + 1);
-        }
-        return result;
+        return frequencies;
+    }
+
+    public Integer elementFrequency(String value) {
+        return frequencies.getOrDefault(value, 0);
     }
 
     public int size()

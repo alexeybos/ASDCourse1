@@ -34,11 +34,14 @@ public class GenericPowerSet<T> {
     }
 
     //List<T> = список из двух элементов (пара соответствий)
+    //а по рекомендации С.И. лучше вообще Map использовать, чтобы сразу понятно было - key из первого множества, value из второго
     public GenericPowerSet<List<T>> cartesianProduct(GenericPowerSet<T> set2) {
         GenericPowerSet<List<T>> result = new GenericPowerSet<>();
         for (T elem1 : this.innerSet) {
             for (T elem2 : set2.innerSet) {
                 ArrayList<T> pair = new ArrayList<>(Arrays.asList(elem1, elem2));
+                Map<T, T> pairMap = new HashMap<>();
+                pairMap.put(elem1, elem2);
                 result.put(pair);
             }
         }
