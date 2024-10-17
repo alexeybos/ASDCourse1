@@ -6,12 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class NativeDictionaryTest {
 
-
-    //Сделайте тесты, проверяющие, как работают put(), is_key() и get():
-    //- добавление значения по новому ключу и добавление значения по уже существующему ключу с проверками что записалось,
-    //- проверка присутствующего и отсутствующего ключей,
-    //- извлечение значения по существующему и отсутствующему ключу.
-
     @Test
     void isKey() {
         NativeDictionary<String> dict = new NativeDictionary<>(17, String.class);
@@ -50,6 +44,17 @@ class NativeDictionaryTest {
         dict.put("5", 200); //2
         assertEquals("5", dict.slots[2]);
         assertEquals(200, dict.values[2]);
+    }
+
+    @Test
+    void testPutInteger_OverHead() {
+        NativeDictionary<Integer> dict = new NativeDictionary<>(5, Integer.class);
+        dict.put("01", 100); //12
+        dict.put("5", 200); //2
+        dict.put("6", 200); //2
+        dict.put("7", 200); //2
+        dict.put("8", 200); //2
+        dict.put("9", 200); //2
     }
 
     @Test

@@ -45,14 +45,16 @@ class NativeDictionary<T>
 
     public void put(String key, T value)
     {
-        if (!isKey(key)) {
-            int slot = seekSlot(key);
-            slots[slot] = key;
+        int slot = find(key);
+        if (slot != -1) { //уже есть
             values[slot] = value;
             return;
         }
-        int slot = find(key);
-        values[slot] = value;
+        slot = seekSlot(key);
+        if (slot != -1) {
+            slots[slot] = key;
+            values[slot] = value;
+        }
     }
 
     public T get(String key)

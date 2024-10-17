@@ -13,6 +13,7 @@ class NativeCache<T>
     public NativeCache(int sz, Class clazz) {
         size = sz;
         slots = new String[size];
+        hits = new int[size];
         values = (T[]) Array.newInstance(clazz, this.size);
     }
 
@@ -45,14 +46,25 @@ class NativeCache<T>
 
     public void put(String key, T value)
     {
-        if (!isKey(key)) {
-            int slot = seekSlot(key);
-            slots[slot] = key;
+        int slot = find(key);
+        if (slot != -1) {
             values[slot] = value;
+            hits[slot] += 1;
             return;
         }
-        int slot = find(key);
+        slot = seekSlot(key);
+        if (slot == -1) {
+            int min = hits[0];
+            int removeIndex = 0;
+            for (int i = 1; i < hits.length; i++) {
+                if (min > hits[i]) removeIndex = i;
+            }
+            slots[removeIndex] = null;
+            slot = seekSlot(key);
+        }
+        slots[slot] = key;
         values[slot] = value;
+        hits[slot] = 0;
     }
 
     public T get(String key)
@@ -61,6 +73,7 @@ class NativeCache<T>
             return null;
         }
         int slot = find(key);
+        hits[slot] += 1;
         return values[slot];
     }
 
@@ -69,7 +82,9 @@ class NativeCache<T>
         int slot = hashFun(key);
         for (int i = 0; i <= STEP; i++) {
             for (; slot < size; slot += STEP) {
-                if (slots[slot] == key) return slot;
+                if (slots[slot] == key) {
+                    return slot;
+                }
                 if (slots[slot] == null) return -1;
             }
             slot -= size;
