@@ -28,6 +28,14 @@ public class SortLevel {
             }
         }
     }
+
+    public static void shellSort(int[] array) {
+        for (Integer step: KnuthSequence(array.length)) {
+            for (int j = 0; j + step < array.length; j++) {
+                InsertionSortStep(array, step, j);
+            }
+        }
+    }
 }
 
 
