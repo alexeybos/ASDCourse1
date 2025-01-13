@@ -5,8 +5,8 @@ import java.util.*;
 public class SortLevel {
     public static int ArrayChunk(int[] array)
     {
-        int pivotIndex = array.length / 2;
         for (;;) {
+            int pivotIndex = array.length / 2;
             int pivot = array[pivotIndex];
             int i1 = 0;
             int i2 = array.length - 1;
