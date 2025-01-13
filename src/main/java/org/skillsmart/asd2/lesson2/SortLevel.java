@@ -7,10 +7,11 @@ public class SortLevel {
     {
         for (int j = i + step; j < array.length; j += step) {
             int tmpForExchange = array[j];
-            for (int k = j - step; k >= i && array[k] > tmpForExchange; k -= step) {
-                array[k + step] = array[k];
-                array[k] = tmpForExchange;
+            int k = j;
+            for (; k > i && array[k - step] > tmpForExchange; k -= step) {
+                array[k] = array[k - step];
             }
+            array[k] = tmpForExchange;
         }
     }
 
@@ -31,8 +32,8 @@ public class SortLevel {
 
     public static void shellSort(int[] array) {
         for (Integer step: KnuthSequence(array.length)) {
-            for (int j = 0; j + step < array.length; j++) {
-                InsertionSortStep(array, step, j);
+            for (int i = 0; i < step && i < array.length - step; i++) {
+                InsertionSortStep(array, step, i);
             }
         }
     }

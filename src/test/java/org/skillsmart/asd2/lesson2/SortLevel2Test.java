@@ -109,7 +109,7 @@ class SortLevel2Test {
             System.out.print(array[i] + ",");
         }
         System.out.println("\n----");
-        int[] array2 = {7,8,12,6,5,11,4,13,3,9,14,2,1,10};
+        int[] array2 = {7,8,12,6,5,11,4,13,3,15,9,14,2,1,10};
         SortLevel.shellSort(array2);
         for (int i = 0; i < array2.length; i++) {
             assertEquals(i + 1, array2[i]);
