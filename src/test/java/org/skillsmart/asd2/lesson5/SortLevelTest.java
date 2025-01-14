@@ -30,7 +30,7 @@ class SortLevelTest {
         for (int i = 0; i < array2.length; i++) {
             System.out.print(array2[i] + ",");
         }
-
+        System.out.println(" ");
         int[] array = {7,6,5,4,3,2,1};
         SortLevel.QuickSort(array, 0, array.length - 1);
         for (int i = 0; i < array.length; i++) {
