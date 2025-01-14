@@ -1,5 +1,7 @@
 package org.skillsmart.asd2.lesson5;
 
+import java.util.*;
+
 public class SortLevel {
     public static int ArrayChunk(int[] array, int left, int right)
     {
@@ -37,6 +39,21 @@ public class SortLevel {
         int pivotIndex = ArrayChunk(array, left, right);
         QuickSort(array, left, pivotIndex - 1);
         QuickSort(array, pivotIndex + 1, right);
+    }
+
+    public static void QuickSortTailOptimization(int[] array, int left, int right)
+    {
+        for (; left < right;) {
+            int pivotIndex = ArrayChunk(array, left, right);
+            if (pivotIndex - left < right - pivotIndex) {
+                QuickSortTailOptimization(array, left, pivotIndex - 1);
+                left = pivotIndex + 1;
+            } else {
+                QuickSortTailOptimization(array, pivotIndex + 1, right);
+                right = pivotIndex - 1;
+            }
+        }
+
     }
 }
 
