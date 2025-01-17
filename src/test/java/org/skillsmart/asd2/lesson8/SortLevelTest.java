@@ -32,5 +32,13 @@ class SortLevelTest {
             assertEquals(i + 1, result2.get(i));
             System.out.print(result2.get(i) + ",");
         }
+
+        System.out.println();
+        ArrayList<Integer> array3 = new ArrayList<>(Arrays.asList(1,2,3,4,0));
+        ArrayList<Integer> result3 = SortLevel.MergeSort(array3);
+        for (int i = 0; i < result3.size(); i++) {
+            assertEquals(i, result3.get(i));
+            System.out.print(result3.get(i) + ",");
+        }
     }
 }

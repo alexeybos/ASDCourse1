@@ -1,6 +1,6 @@
 package org.skillsmart.asd2.lesson8;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class SortLevel {
     public static ArrayList<Integer> MergeSort(ArrayList<Integer> array)
