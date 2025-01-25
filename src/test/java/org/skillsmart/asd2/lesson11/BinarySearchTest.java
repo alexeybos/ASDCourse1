@@ -87,4 +87,34 @@ class BinarySearchTest {
         bs1.Step(3);
         assertEquals(-1, bs1.GetResult());
     }
+
+    @Test
+    void testGallopingSearch() {
+        int[] sortedArr = {1,2,3,4,5,6,7,8,15,22};
+        BinarySearch bs = new BinarySearch(sortedArr);
+        assertTrue(bs.GallopingSearch(sortedArr, 8));
+        assertTrue(bs.GallopingSearch(sortedArr, 1));
+        assertTrue(bs.GallopingSearch(sortedArr, 2));
+        assertTrue(bs.GallopingSearch(sortedArr, 7));
+        assertTrue(bs.GallopingSearch(sortedArr, 4));
+        assertFalse(bs.GallopingSearch(sortedArr, 9));
+        assertFalse(bs.GallopingSearch(sortedArr, 0));
+    }
+
+    @Test
+    void testGallopingSearch_smallArrays() {
+        int[] sortedArr = {2};
+        BinarySearch bs = new BinarySearch(sortedArr);
+        assertFalse(bs.GallopingSearch(sortedArr, 1));
+        assertTrue(bs.GallopingSearch(sortedArr, 2));
+        int[] sortedArr1 = {1};
+        BinarySearch bs1 = new BinarySearch(sortedArr1);
+        assertFalse(bs1.GallopingSearch(sortedArr1, 2));
+        assertTrue(bs1.GallopingSearch(sortedArr1, 1));
+        int[] sortedArr2 = {1,2};
+        BinarySearch bs2 = new BinarySearch(sortedArr2);
+        assertFalse(bs2.GallopingSearch(sortedArr2, 3));
+        assertTrue(bs2.GallopingSearch(sortedArr2, 1));
+        assertTrue(bs2.GallopingSearch(sortedArr2, 2));
+    }
 }

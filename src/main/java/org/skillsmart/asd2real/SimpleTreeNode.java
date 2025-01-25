@@ -1,12 +1,12 @@
-package org.skillsmart.asd3.lesson1;
+package org.skillsmart.asd2real;
 
 import java.util.*;
 
 public class SimpleTreeNode<T>
 {
-    public T NodeValue; // значение в узле
-    public SimpleTreeNode<T> Parent; // родитель или null для корня
-    public List<SimpleTreeNode<T>> Children; // список дочерних узлов или null
+    public T NodeValue;
+    public SimpleTreeNode<T> Parent;
+    public List<SimpleTreeNode<T>> Children;
     public int level;
 
     public SimpleTreeNode(T val, SimpleTreeNode<T> parent)
@@ -20,7 +20,7 @@ public class SimpleTreeNode<T>
 
 class SimpleTree<T>
 {
-    public SimpleTreeNode<T> Root; // корень, может быть null
+    public SimpleTreeNode<T> Root;
 
     public SimpleTree(SimpleTreeNode<T> root)
     {
@@ -29,7 +29,6 @@ class SimpleTree<T>
 
     public void AddChild(SimpleTreeNode<T> ParentNode, SimpleTreeNode<T> NewChild)
     {
-        // ваш код добавления нового дочернего узла существующему ParentNode
         if (ParentNode == null && Root == null) {
             Root = NewChild;
         }
@@ -42,7 +41,6 @@ class SimpleTree<T>
 
     public void DeleteNode(SimpleTreeNode<T> NodeToDelete)
     {
-        // ваш код удаления существующего узла NodeToDelete
         NodeToDelete.Parent.Children.remove(NodeToDelete);
         if (NodeToDelete.Parent.Children.isEmpty()) {
             NodeToDelete.Parent.Children = null;
@@ -53,7 +51,6 @@ class SimpleTree<T>
 
     public List<SimpleTreeNode<T>> GetAllNodes()
     {
-        // ваш код выдачи всех узлов дерева в определённом порядке
         if (Root == null) return null;
         List<SimpleTreeNode<T>> allNodesList = new ArrayList<>();
         getChildren(Root, allNodesList);
@@ -70,8 +67,6 @@ class SimpleTree<T>
 
     public List<SimpleTreeNode<T>> FindNodesByValue(T val)
     {
-        // ваш код поиска узлов по значению
-        //TODO тут не понятно, что ожидается при неудаче - пока возвращает пустой список. Возможно нужен null
         if (Root == null) return null;
         List<SimpleTreeNode<T>> nodesFound = new ArrayList<>();
         findInChildren(Root, nodesFound, val);
@@ -88,21 +83,17 @@ class SimpleTree<T>
 
     public void MoveNode(SimpleTreeNode<T> OriginalNode, SimpleTreeNode<T> NewParent)
     {
-        // ваш код перемещения узла вместе с его поддеревом --
-        // в качестве дочернего для узла NewParent
         DeleteNode(OriginalNode);
         AddChild(NewParent, OriginalNode);
     }
 
     public int Count()
     {
-        // количество всех узлов в дереве
         return leafOrNodeCount(Root, 1);
     }
 
     public int LeafCount()
     {
-        // количество листьев в дереве
         return leafOrNodeCount(Root, 0);
     }
 
@@ -114,35 +105,6 @@ class SimpleTree<T>
             cnt += leafOrNodeCount(node.Children.get(i), startCountFrom);
         }
         return cnt;
-    }
-
-    //TODO Дополнительные задания
-
-    public void setLevels() {
-        if (this.Root == null) return;
-        setChildrenLevels(this.Root, 0);
-    }
-
-    //решение O(n) - time, пространственная сложность по стеку вызовов: О(h) - высота дерева (в худшем случае O(n))
-    private void setChildrenLevels(SimpleTreeNode<T> node, int curLevel) {
-        node.level = curLevel;
-        if (node.Children == null) return;
-        for (int i = 0; i < node.Children.size(); i++) {
-            setChildrenLevels(node.Children.get(i), curLevel + 1);
-        }
-    }
-
-    //Поддержка уровней без просмотра всего дерева:
-    //0. поле level в классе
-    //1. Метод AddChild: новому узлу прописывается level+1
-    //2. Метод MoveNode: ну тут рекурсивно обновить level у всего переносимого поддерева согласно mewParent.level + 1
-
-    public boolean isSymmetric() {
-        //сначала частный случай для 2-х children у Root
-        //0. если нет потомков - return true
-        //1. если потомка 2 (четное число) продолжаем
-        //2. оба под-дерева должны быть одинаковы - количество узлов с определенным level должно быть одинаково
-        return false;
     }
 }
 
