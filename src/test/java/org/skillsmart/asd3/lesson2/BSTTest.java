@@ -226,6 +226,6 @@ class BSTTest {
 
     @Test
     void testIsEqual() {
-        
+
     }
 }

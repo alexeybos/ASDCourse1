@@ -106,6 +106,20 @@ class SimpleTree<T>
         }
         return cnt;
     }
+
+    public void setLevels() {
+        if (this.Root == null) return;
+        setChildrenLevels(this.Root, 0);
+    }
+
+    //решение O(n) - time, пространственная сложность по стеку вызовов: О(h) - высота дерева (в худшем случае O(n))
+    private void setChildrenLevels(SimpleTreeNode<T> node, int curLevel) {
+        node.level = curLevel;
+        if (node.Children == null) return;
+        for (int i = 0; i < node.Children.size(); i++) {
+            setChildrenLevels(node.Children.get(i), curLevel + 1);
+        }
+    }
 }
 
 
