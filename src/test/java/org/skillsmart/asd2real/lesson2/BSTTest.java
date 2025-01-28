@@ -1,4 +1,4 @@
-package org.skillsmart.asd3.lesson2;
+package org.skillsmart.asd2real.lesson2;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +12,16 @@ class BSTTest {
     public BST<Integer> bTree;
     public BSTNode<Integer> node0;
 
+    /**
+     * Базовое тестовое дерево:
+     *                  8
+     *               /     \
+     *              4       12
+     *            /  \     /  \
+     *           2    6   10   14
+     *         /
+     *        1
+     */
     @BeforeEach
     void setUp() {
         node0 = new BSTNode<>(8, 8, null);
@@ -94,6 +104,19 @@ class BSTTest {
     }
 
     @Test
+    void testAddKeyValue_EmptyTree() {
+        BST<Integer> tree = new BST<>(null);
+        assertTrue(tree.AddKeyValue(8, 8));
+        assertEquals(8, tree.Root.NodeKey);
+    }
+
+    @Test
+    void testFinMinMax_EmptyTree() {
+        BST<Integer> tree = new BST<>(null);
+        assertNull(tree.FinMinMax(null, false));
+    }
+
+    @Test
     void testFinMinMax_MinFromRoot() {
         bTree.AddKeyValue(3, 3);
         bTree.AddKeyValue(5, 5);
@@ -132,6 +155,19 @@ class BSTTest {
         bTree.AddKeyValue(16, 16);
         assertEquals(16, bTree.FinMinMax(bTree.FindNodeByKey(16).Node, false).NodeKey);
         assertEquals(16, bTree.FinMinMax(bTree.FindNodeByKey(16).Node, true).NodeKey);
+    }
+
+    @Test
+    void testDeleteNodeByKey_EmptyTree() {
+        BST<Integer> tree = new BST<>(null);
+        assertFalse(tree.DeleteNodeByKey(8));
+    }
+
+    @Test
+    void testDeleteNodeByKey_OnlyRootTree() {
+        BST<Integer> tree = new BST<>(new BSTNode<>(8, 8, null));
+        assertTrue(tree.DeleteNodeByKey(8));
+        assertNull(tree.Root);
     }
 
     @Test
@@ -277,12 +313,36 @@ class BSTTest {
 
     @Test
     void testAllPathsToLeavesWithLength() {
-        ArrayList<ArrayList<BSTNode<Integer>>> leaves = bTree.allPathsToLeavesWithLength(3);
-        assertEquals(1, leaves.size());
+        ArrayList<ArrayList<BSTNode<Integer>>> paths = bTree.allPathsToLeavesWithLength(3);
+        assertEquals(1, paths.size());
+        assertEquals(4, paths.getFirst().size()); //4 - т.к. путь вместе с листом на конце
+        assertEquals(8, paths.getFirst().getFirst().NodeKey);
+        assertEquals(4, paths.getFirst().get(1).NodeKey);
+        assertEquals(2, paths.getFirst().get(2).NodeKey);
+        assertEquals(1, paths.getFirst().get(3).NodeKey);
+
         bTree.AddKeyValue(13, 13);
         bTree.AddKeyValue(16, 16);
-        leaves = bTree.allPathsToLeavesWithLength(3);
-        assertEquals(3, leaves.size());
+        paths = bTree.allPathsToLeavesWithLength(3);
+        assertEquals(3, paths.size());
+        assertEquals(4, paths.getFirst().size());
+        assertEquals(4, paths.get(1).size());
+        assertEquals(4, paths.get(2).size());
+
+        assertEquals(8, paths.getFirst().getFirst().NodeKey);
+        assertEquals(4, paths.getFirst().get(1).NodeKey);
+        assertEquals(2, paths.getFirst().get(2).NodeKey);
+        assertEquals(1, paths.getFirst().get(3).NodeKey);
+
+        assertEquals(8, paths.get(1).getFirst().NodeKey);
+        assertEquals(12, paths.get(1).get(1).NodeKey);
+        assertEquals(14, paths.get(1).get(2).NodeKey);
+        assertEquals(13, paths.get(1).get(3).NodeKey);
+
+        assertEquals(8, paths.get(2).getFirst().NodeKey);
+        assertEquals(12, paths.get(2).get(1).NodeKey);
+        assertEquals(14, paths.get(2).get(2).NodeKey);
+        assertEquals(16, paths.get(2).get(3).NodeKey);
     }
 
     @Test
