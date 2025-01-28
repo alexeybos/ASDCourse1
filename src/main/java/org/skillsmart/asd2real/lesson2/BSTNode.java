@@ -162,7 +162,6 @@ class BST<T>
         return 1 + childrenCount(node.LeftChild) + childrenCount(node.RightChild);
     }
 
-    //TODO доп. задания
 
     //сложность O(n) - time, пространственная сложность по стеку вызовов: О(h) - высота дерева (в худшем случае O(n))
     public boolean isEqual(BST<T> tree) {
