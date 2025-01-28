@@ -312,6 +312,19 @@ class BSTTest {
     }
 
     @Test
+    void testAllPathsToLeavesWithLength_EmptyTree() {
+        BST<Integer> tree = new BST<>(null);
+        ArrayList<ArrayList<BSTNode<Integer>>> paths = tree.allPathsToLeavesWithLength(3);
+        assertEquals(0, paths.size());
+    }
+
+    @Test
+    void testAllPathsToLeavesWithLength_ExtraLength() {
+        ArrayList<ArrayList<BSTNode<Integer>>> paths = bTree.allPathsToLeavesWithLength(10);
+        assertEquals(0, paths.size());
+    }
+
+    @Test
     void testAllPathsToLeavesWithLength() {
         ArrayList<ArrayList<BSTNode<Integer>>> paths = bTree.allPathsToLeavesWithLength(3);
         assertEquals(1, paths.size());
@@ -343,6 +356,13 @@ class BSTTest {
         assertEquals(12, paths.get(2).get(1).NodeKey);
         assertEquals(14, paths.get(2).get(2).NodeKey);
         assertEquals(16, paths.get(2).get(3).NodeKey);
+    }
+
+    @Test
+    void pathsWithMaxSumOfValues_EmptyTree() {
+        BST<Integer> tree = new BST<>(null);
+        ArrayList<ArrayList<BSTNode<Integer>>> leaves = tree.pathsWithMaxSumOfValues();
+        assertEquals(0, leaves.size());
     }
 
     @Test
