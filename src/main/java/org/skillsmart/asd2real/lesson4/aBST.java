@@ -4,11 +4,10 @@ import java.util.*;
 
 class aBST
 {
-    public Integer Tree []; // массив ключей
+    public Integer Tree [];
 
     public aBST(int depth)
     {
-        // правильно рассчитайте размер массива для дерева глубины depth:
         int tree_size = getSizeByDepth(depth, 0);
         Tree = new Integer[ tree_size ];
         for(int i=0; i<tree_size; i++) Tree[i] = null;
@@ -23,17 +22,15 @@ class aBST
 
     public Integer FindKeyIndex(int key)
     {
-        for (int i = 0; i < 0; i = (i - 1) / 2) {
-
-        }
-        // ищем в массиве индекс ключа
-        return null; // не найден
+        return findKeyIndex(key, 0);
     }
 
     private Integer findKeyIndex(int key, int currentNode) {
         if (currentNode > Tree.length) return null;
+        if (Tree[currentNode] == null) return -currentNode;
         if (Tree[currentNode] == key) return currentNode;
-        return findKeyIndex(key, 2 * currentNode + 1);
+        if (Tree[currentNode] > key) return findKeyIndex(key, 2 * currentNode + 1);
+        return findKeyIndex(key, 2 * currentNode + 2);
     }
 
     public int AddKey(int key)
@@ -44,6 +41,9 @@ class aBST
         Tree[indexToAdd] = key;
         return indexToAdd;
     }
+
+    //TODO additional tasks
+
 
 }
 

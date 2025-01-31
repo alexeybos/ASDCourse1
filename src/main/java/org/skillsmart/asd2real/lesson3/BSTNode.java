@@ -194,14 +194,41 @@ class BST<T>
         node.RightChild = tmpForSwap;
     }
 
+    //стандартный обход дерева в ширину (с помощью стека)
+    public ArrayList<BSTNode> WideAllNodesClassic() {
+        if (Root == null) return new ArrayList<BSTNode>();
+        ArrayList<BSTNode> nodes = new ArrayList<>();
+        Stack<BSTNode> curLevel = new Stack<>();
+        curLevel.push(Root);
+        for (; !curLevel.isEmpty();) {
+            nodes.add(curLevel.pop());
+            if (nodes.getLast().LeftChild != null) curLevel.push(nodes.getLast().LeftChild);
+            if (nodes.getLast().RightChild != null) curLevel.push(nodes.getLast().RightChild);
+        }
+        return nodes;
+    }
+
     public ArrayList<BSTNode> WideAllNodes() {
         if (Root == null) return new ArrayList<BSTNode>();
         ArrayList<BSTNode> nodes = new ArrayList<>();
-        for (ArrayList<BSTNode> nextLevel = getNextLevelNodes(new ArrayList<BSTNode>()); !nextLevel.isEmpty();) {
-            nodes.addAll(nextLevel);
-            nextLevel = getNextLevelNodes(nextLevel);
+        Stack<BSTNode> curLevel = new Stack<>();
+        curLevel.push(Root);
+        for (; !curLevel.isEmpty();) {
+            nodes.addAll(curLevel);
+            curLevel = getNextLevelNodes(curLevel);
         }
         return nodes;
+    }
+
+    //выделенный шаг обхода в ширину для возможности анализа узлов каждого уровня отдельно
+    private Stack<BSTNode> getNextLevelNodes(Stack<BSTNode> curLevel) {
+        Stack<BSTNode> nextLevel = new Stack<>();
+        for (; !curLevel.isEmpty();) {
+            BSTNode node = curLevel.pop();
+            if (node.LeftChild != null) nextLevel.push(node.LeftChild);
+            if (node.RightChild != null) nextLevel.push(node.RightChild);
+        }
+        return nextLevel;
     }
 
     //time - O(n), память: О(n) - (O(n) на хранение узлов + по стеку вызовов O(h) высота дерева (в худшем случае O(n))
@@ -210,30 +237,21 @@ class BST<T>
         if (Root == null) return null;
         ArrayList<BSTNode> levelWithMaxSum = new ArrayList<>();
         int max = 0;
-        for (ArrayList<BSTNode> nextLevel = getNextLevelNodes(new ArrayList<BSTNode>()); !nextLevel.isEmpty();) {
-            int levelSum = getNodesSum(nextLevel);
+        Stack<BSTNode> curLevel = new Stack<>();
+        curLevel.push(Root);
+        for (; !curLevel.isEmpty();) {
+            int levelSum = getNodesSum(curLevel);
             if (levelSum > max) {
                 max = levelSum;
                 levelWithMaxSum.clear();
-                levelWithMaxSum.addAll(nextLevel);
+                levelWithMaxSum.addAll(curLevel);
             }
-            nextLevel = getNextLevelNodes(nextLevel);
+            curLevel = getNextLevelNodes(curLevel);
         }
         return levelWithMaxSum;
     }
 
-    //выделенный шаг обхода в ширину
-    private ArrayList<BSTNode> getNextLevelNodes(ArrayList<BSTNode> parentLevel) {
-        ArrayList<BSTNode> nextLevelNodes = new ArrayList<>();
-        if (parentLevel.isEmpty()) nextLevelNodes.add(Root);
-        for (int i = 0; i < parentLevel.size(); i++) {
-            if (parentLevel.get(i).LeftChild != null) nextLevelNodes.add(parentLevel.get(i).LeftChild);
-            if (parentLevel.get(i).RightChild != null) nextLevelNodes.add(parentLevel.get(i).RightChild);
-        }
-        return nextLevelNodes;
-    }
-
-    private int getNodesSum(ArrayList<BSTNode> level) {
+    private int getNodesSum(Stack<BSTNode> level) {
         int sum = 0;
         for (BSTNode bstNode : level) {
             sum += bstNode.NodeKey;
