@@ -1,6 +1,7 @@
 package org.skillsmart.asd2real.lesson3;
 
-import java.util.ArrayList;
+import java.io.*;
+import java.util.*;
 
 class BSTNode<T>
 {
@@ -68,6 +69,10 @@ class BST<T>
     {
         BSTFind<T> nodeToAdd = FindNodeByKey(key);
         if (nodeToAdd.NodeHasKey) return false; // если ключ уже есть
+        if (nodeToAdd.Node == null) {
+            Root = new BSTNode<>(key, val, null);
+            return true;
+        }
         if (nodeToAdd.ToLeft) {
             nodeToAdd.Node.LeftChild = new BSTNode<>(key, val, nodeToAdd.Node);
         } else {
@@ -160,20 +165,107 @@ class BST<T>
     public ArrayList<BSTNode> WideAllNodes() {
         if (Root == null) return new ArrayList<BSTNode>();
         ArrayList<BSTNode> nodes = new ArrayList<>();
-
+        nodes.add(Root);
+        for (int i = 0; i < nodes.size(); i++) {
+            if (nodes.get(i).LeftChild != null) nodes.add(nodes.get(i).LeftChild);
+            if (nodes.get(i).RightChild != null) nodes.add(nodes.get(i).RightChild);
+        }
         return nodes;
     }
 
     public ArrayList<BSTNode> DeepAllNodes(int order) {
         //0 (in-order), 1 (post-order) и 2 (pre-order)
         ArrayList<BSTNode> nodes = new ArrayList<>();
-
+        getNextNodes(Root, nodes, order);
         return nodes;
+    }
+
+    private void getNextNodes(BSTNode<T> node, ArrayList<BSTNode> nodes, int order) {
+        if (node == null) return;
+        if (order == 2) nodes.add(node);
+        getNextNodes(node.LeftChild, nodes, order);
+        if (order == 0) nodes.add(node);
+        getNextNodes(node.RightChild, nodes, order);
+        if (order == 1) nodes.add(node);
     }
 
     //TODO доп. задания
 
+    //O(n) - time, пространственная сложность по стеку вызовов: О(h) - высота дерева (в худшем случае O(n))
+    public void invert() {
+        swapChildren(Root);
+    }
 
+    private void swapChildren(BSTNode<T> node) {
+        if (node == null) return;
+        swapChildren(node.LeftChild);
+        swapChildren(node.RightChild);
+        BSTNode<T> tmpForSwap = node.LeftChild;
+        node.LeftChild = node.RightChild;
+        node.RightChild = tmpForSwap;
+    }
+
+    //O(n) - time, пространственная: О(n) - (O(n) на хранение узлов + по стеку вызовов O(h) высота дерева (в худшем случае O(n))
+    //возвращает первый встреченный уровень с максимальной суммой
+    public ArrayList<BSTNode> getLevelWithMaxSum() {
+        if (Root == null) return null;
+        ArrayList<BSTNode> nodes = new ArrayList<>();
+        ArrayList<BSTNode> levelWithMaxSum = new ArrayList<>();
+        nodes.add(Root);
+        int[] maxSum = new int[1];
+        getNextLevelSum(nodes, levelWithMaxSum, maxSum);
+        return levelWithMaxSum;
+    }
+
+    private void getNextLevelSum(ArrayList<BSTNode> nodes, ArrayList<BSTNode> levelWithMaxSum, int[] currentMax) {
+        ArrayList<BSTNode> nextLevelNodes = new ArrayList<>();
+        int levelSum = 0;
+        for (int i = 0; i < nodes.size(); i++) {
+            levelSum += nodes.get(i).NodeKey;
+            if (nodes.get(i).LeftChild != null) nextLevelNodes.add(nodes.get(i).LeftChild);
+            if (nodes.get(i).RightChild != null) nextLevelNodes.add(nodes.get(i).RightChild);
+            if (levelSum > currentMax[0]) {
+                levelWithMaxSum.clear();
+                levelWithMaxSum.addAll(nodes);
+                currentMax[0] = levelSum;
+            }
+        }
+        if (nextLevelNodes.isEmpty()) return;
+        getNextLevelSum(nextLevelNodes, levelWithMaxSum, currentMax);
+    }
+
+    //нужны оба прохода для однозначного определения взаимного положения узлов, т.к. по префиксному проходу мы можем понять только
+    //порядок следования узлов, а вот их взаимная конфигурация относительно друг друга проясняется по смещениям "корней" в инфиксном проходе
+    //время O(nlogn) - рекурсивный обход всех узлов + поиск текущего корня в массиве inOrder,
+    //пространственная: О(nlogn) - (по стеку вызовов O(h) высота дерева (в худшем случае O(n) и + O(nlogn) на хранение временных массивов)
+    public void restoreTree(int[] preOrder, int[] inOrder) {
+        int[] rootPointer = {0};
+        Root = restoreSubTree(null, preOrder, inOrder, rootPointer);
+    }
+
+    private BSTNode<T> restoreSubTree(BSTNode<T> parent, int[] preOrder, int[] inOrder, int[] rootPointer) {
+        if (inOrder.length == 0) return null;
+
+        BSTNode<T> curRoot = new BSTNode<>(preOrder[rootPointer[0]], null, parent);
+        int rootPos = findIndexOfValInArr(inOrder, preOrder[rootPointer[0]]);
+        int[] left = new int[rootPos];
+        System.arraycopy(inOrder, 0, left, 0, rootPos);
+        int[] right = new int[inOrder.length - rootPos - 1];
+        System.arraycopy(inOrder, rootPos + 1, right, 0, inOrder.length - rootPos - 1);
+
+        rootPointer[0] += 1;
+        curRoot.LeftChild = restoreSubTree(curRoot, preOrder, left, rootPointer);
+
+        curRoot.RightChild = restoreSubTree(curRoot, preOrder, right, rootPointer);
+        return curRoot;
+    }
+
+    private int findIndexOfValInArr(int[] array, int val) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == val) return i;
+        }
+        return -1;
+    }
 }
 
 
