@@ -278,6 +278,68 @@ class BST<T>
         if (!isTreesMirroredEqual(tree1.LeftChild, tree2.RightChild)) return false;
         return isTreesMirroredEqual(tree1.RightChild, tree2.LeftChild);
     }
+
+    private void myPathToLeafOnLevel(BSTNode<T> startNode, int length, ArrayList<ArrayList<BSTNode<T>>> paths,
+                                   ArrayList<BSTNode<T>> path, boolean deleteParentInPath) {
+        if (startNode == null) {
+            if (deleteParentInPath) path.removeLast(); //если я пришел слева, то пока не удалять!!!
+            return;
+        }
+        if (length == 0 && startNode.LeftChild == null && startNode.RightChild == null) {
+            path.add(startNode);
+            paths.add(new ArrayList<>(path));
+            path.removeLast();
+            return;
+        }
+        if (startNode.LeftChild == null && startNode.RightChild == null) {
+            if (deleteParentInPath) path.removeLast(); //если я пришел слева, то пока не удалять!!!
+            return;
+        }
+        path.add(startNode);
+        myPathToLeafOnLevel(startNode.LeftChild, length - 1, paths, path, false);
+        myPathToLeafOnLevel(startNode.RightChild, length - 1, paths, path, true);
+    }
+    //конкретная логика для PathToLeafOnLevel
+
+    private void generalRecursive(BSTNode<T> startNode, int length, ArrayList<ArrayList<BSTNode<T>>> paths,
+                                  ArrayList<BSTNode<T>> path, boolean deleteParentInPath) {
+        if (startNode == null) {
+            if (deleteParentInPath) path.removeLast(); //если я пришел слева, то пока не удалять!!!
+            return;
+        }
+
+        if (startNode.LeftChild == null && startNode.RightChild == null) {
+            if (deleteParentInPath) path.removeLast(); //если я пришел слева, то пока не удалять!!!
+            return;
+        }
+
+        path.add(startNode);
+        myPathToLeafOnLevel(startNode.LeftChild, length - 1, paths, path, false);
+        myPathToLeafOnLevel(startNode.RightChild, length - 1, paths, path, true);
+    }
+
+    private void myPathToLeavesWithMaxSum(BSTNode<T> node, ArrayList<ArrayList<BSTNode<T>>> paths,
+                                        ArrayList<BSTNode<T>> path, int[] currentMax, int sum, boolean deleteParentInPath) {
+        if (node == null) {
+            if (deleteParentInPath) path.removeLast();
+            return;
+        }
+        if (node.RightChild == null && node.LeftChild == null) {
+            //это лист - фиксируем путь и сумму
+            if (sum >= currentMax[0]) {
+                if (sum > currentMax[0]) paths.clear();
+                currentMax[0] = sum;
+                path.add(node);
+                paths.add(new ArrayList<>(path));
+                path.removeLast();
+            }
+            if (deleteParentInPath) path.removeLast();
+            return;
+        }
+        path.add(node);
+        myPathToLeavesWithMaxSum(node.RightChild, paths, path, currentMax, sum + node.NodeKey, false);
+        myPathToLeavesWithMaxSum(node.LeftChild, paths, path, currentMax, sum + node.NodeKey, true);
+    }
 }
 
 

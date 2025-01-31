@@ -55,7 +55,7 @@ class BSTTest {
         bTree.AddKeyValue(15, 15);
         ArrayList<BSTNode> nodes = bTree.WideAllNodes();
         assertEquals(9, nodes.size());
-        /*assertEquals(8, nodes.get(0).NodeKey);
+        assertEquals(8, nodes.get(0).NodeKey);
         assertEquals(4, nodes.get(1).NodeKey);
         assertEquals(12, nodes.get(2).NodeKey);
         assertEquals(2, nodes.get(3).NodeKey);
@@ -63,7 +63,7 @@ class BSTTest {
         assertEquals(10, nodes.get(5).NodeKey);
         assertEquals(14, nodes.get(6).NodeKey);
         assertEquals(1, nodes.get(7).NodeKey);
-        assertEquals(15, nodes.get(8).NodeKey);*/
+        assertEquals(15, nodes.get(8).NodeKey);
     }
 
     @Test

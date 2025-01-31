@@ -1,6 +1,5 @@
 package org.skillsmart.asd2real.lesson3;
 
-import java.io.*;
 import java.util.*;
 
 class BSTNode<T>
@@ -194,34 +193,60 @@ class BST<T>
         node.RightChild = tmpForSwap;
     }
 
-    //стандартный обход дерева в ширину (с помощью стека)
-    public ArrayList<BSTNode> WideAllNodesClassic() {
-        if (Root == null) return new ArrayList<BSTNode>();
-        ArrayList<BSTNode> nodes = new ArrayList<>();
-        Stack<BSTNode> curLevel = new Stack<>();
-        curLevel.push(Root);
-        for (; !curLevel.isEmpty();) {
-            nodes.add(curLevel.pop());
-            if (nodes.getLast().LeftChild != null) curLevel.push(nodes.getLast().LeftChild);
-            if (nodes.getLast().RightChild != null) curLevel.push(nodes.getLast().RightChild);
-        }
-        return nodes;
-    }
-
     public ArrayList<BSTNode> WideAllNodes() {
         if (Root == null) return new ArrayList<BSTNode>();
         ArrayList<BSTNode> nodes = new ArrayList<>();
-        Stack<BSTNode> curLevel = new Stack<>();
-        curLevel.push(Root);
-        for (; !curLevel.isEmpty();) {
-            nodes.addAll(curLevel);
-            curLevel = getNextLevelNodes(curLevel);
-        }
+        WideAllNodesBase(new LevelProcessor() {
+            @Override
+            public boolean processLevel(ArrayList<BSTNode> levelNodes, int level) {
+                nodes.addAll(levelNodes);
+                return true;
+            }
+        });
         return nodes;
     }
 
+    public ArrayList<BSTNode> getLevelWithMaxSum() {
+        if (Root == null) return null;
+        ArrayList<BSTNode> levelWithMaxSum = new ArrayList<>();
+        final int[] max = {0};
+        WideAllNodesBase(new LevelProcessor() {
+            @Override
+            public boolean processLevel(ArrayList<BSTNode> levelNodes, int level) {
+                int levelSum = getNodesSum(levelNodes);
+                if (levelSum > max[0]) {
+                    max[0] = levelSum;
+                    levelWithMaxSum.clear();
+                    levelWithMaxSum.addAll(levelNodes);
+                }
+                return true;
+            }
+        });
+        return levelWithMaxSum;
+    }
+
+    private void WideAllNodesBase(LevelProcessor processor) {
+        if (Root == null) return;
+        int currentLevel = 0;
+        ArrayList<BSTNode> nodes = new ArrayList<>();
+        Queue<BSTNode> curLevel = new LinkedList<>();
+        curLevel.add(Root);
+        for (; !curLevel.isEmpty();) {
+            int levelSize = curLevel.size();
+            for (int i = 0; i < levelSize; i++) {
+                BSTNode node = curLevel.poll();
+                nodes.add(node);
+                if (node.LeftChild != null) curLevel.add(node.LeftChild);
+                if (node.RightChild != null) curLevel.add(node.RightChild);
+            }
+            if (!processor.processLevel(nodes, currentLevel)) return;
+            currentLevel++;
+            nodes.clear();
+        }
+    }
+
     //выделенный шаг обхода в ширину для возможности анализа узлов каждого уровня отдельно
-    private Stack<BSTNode> getNextLevelNodes(Stack<BSTNode> curLevel) {
+    private Stack<BSTNode> OldGetNextLevelNodes(Stack<BSTNode> curLevel) {
         Stack<BSTNode> nextLevel = new Stack<>();
         for (; !curLevel.isEmpty();) {
             BSTNode node = curLevel.pop();
@@ -233,25 +258,25 @@ class BST<T>
 
     //time - O(n), память: О(n) - (O(n) на хранение узлов + по стеку вызовов O(h) высота дерева (в худшем случае O(n))
     //возвращает первый встреченный уровень с максимальной суммой
-    public ArrayList<BSTNode> getLevelWithMaxSum() {
+    public ArrayList<BSTNode> OldGetLevelWithMaxSum() {
         if (Root == null) return null;
         ArrayList<BSTNode> levelWithMaxSum = new ArrayList<>();
         int max = 0;
         Stack<BSTNode> curLevel = new Stack<>();
         curLevel.push(Root);
         for (; !curLevel.isEmpty();) {
-            int levelSum = getNodesSum(curLevel);
+            int levelSum = 100;//getNodesSum(curLevel);
             if (levelSum > max) {
                 max = levelSum;
                 levelWithMaxSum.clear();
                 levelWithMaxSum.addAll(curLevel);
             }
-            curLevel = getNextLevelNodes(curLevel);
+            curLevel = OldGetNextLevelNodes(curLevel);
         }
         return levelWithMaxSum;
     }
 
-    private int getNodesSum(Stack<BSTNode> level) {
+    private int getNodesSum(ArrayList<BSTNode> level) {
         int sum = 0;
         for (BSTNode bstNode : level) {
             sum += bstNode.NodeKey;
@@ -293,5 +318,14 @@ class BST<T>
     }
 }
 
+interface LevelProcessor {
+    /**
+     *
+     * @param levelNodes levelNodes
+     * @param level level
+     * @return Возвращает признак необходимости продолжения прохода по дереву
+     */
+    boolean processLevel(ArrayList<BSTNode> levelNodes, int level);
+}
 
 
