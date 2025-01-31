@@ -162,17 +162,6 @@ class BST<T>
         return 1 + childrenCount(node.LeftChild) + childrenCount(node.RightChild);
     }
 
-    public ArrayList<BSTNode> WideAllNodes() {
-        if (Root == null) return new ArrayList<BSTNode>();
-        ArrayList<BSTNode> nodes = new ArrayList<>();
-        nodes.add(Root);
-        for (int i = 0; i < nodes.size(); i++) {
-            if (nodes.get(i).LeftChild != null) nodes.add(nodes.get(i).LeftChild);
-            if (nodes.get(i).RightChild != null) nodes.add(nodes.get(i).RightChild);
-        }
-        return nodes;
-    }
-
     public ArrayList<BSTNode> DeepAllNodes(int order) {
         //0 (in-order), 1 (post-order) и 2 (pre-order)
         ArrayList<BSTNode> nodes = new ArrayList<>();
@@ -191,7 +180,7 @@ class BST<T>
 
     //TODO доп. задания
 
-    //O(n) - time, пространственная сложность по стеку вызовов: О(h) - высота дерева (в худшем случае O(n))
+    //time - O(n) , пространственная сложность по стеку вызовов: О(h) - высота дерева (в худшем случае O(n))
     public void invert() {
         swapChildren(Root);
     }
@@ -205,33 +194,51 @@ class BST<T>
         node.RightChild = tmpForSwap;
     }
 
-    //O(n) - time, пространственная: О(n) - (O(n) на хранение узлов + по стеку вызовов O(h) высота дерева (в худшем случае O(n))
+    public ArrayList<BSTNode> WideAllNodes() {
+        if (Root == null) return new ArrayList<BSTNode>();
+        ArrayList<BSTNode> nodes = new ArrayList<>();
+        for (ArrayList<BSTNode> nextLevel = getNextLevelNodes(new ArrayList<BSTNode>()); !nextLevel.isEmpty();) {
+            nodes.addAll(nextLevel);
+            nextLevel = getNextLevelNodes(nextLevel);
+        }
+        return nodes;
+    }
+
+    //time - O(n), память: О(n) - (O(n) на хранение узлов + по стеку вызовов O(h) высота дерева (в худшем случае O(n))
     //возвращает первый встреченный уровень с максимальной суммой
     public ArrayList<BSTNode> getLevelWithMaxSum() {
         if (Root == null) return null;
-        ArrayList<BSTNode> nodes = new ArrayList<>();
         ArrayList<BSTNode> levelWithMaxSum = new ArrayList<>();
-        nodes.add(Root);
-        int[] maxSum = new int[1];
-        getNextLevelSum(nodes, levelWithMaxSum, maxSum);
+        int max = 0;
+        for (ArrayList<BSTNode> nextLevel = getNextLevelNodes(new ArrayList<BSTNode>()); !nextLevel.isEmpty();) {
+            int levelSum = getNodesSum(nextLevel);
+            if (levelSum > max) {
+                max = levelSum;
+                levelWithMaxSum.clear();
+                levelWithMaxSum.addAll(nextLevel);
+            }
+            nextLevel = getNextLevelNodes(nextLevel);
+        }
         return levelWithMaxSum;
     }
 
-    private void getNextLevelSum(ArrayList<BSTNode> nodes, ArrayList<BSTNode> levelWithMaxSum, int[] currentMax) {
+    //выделенный шаг обхода в ширину
+    private ArrayList<BSTNode> getNextLevelNodes(ArrayList<BSTNode> parentLevel) {
         ArrayList<BSTNode> nextLevelNodes = new ArrayList<>();
-        int levelSum = 0;
-        for (int i = 0; i < nodes.size(); i++) {
-            levelSum += nodes.get(i).NodeKey;
-            if (nodes.get(i).LeftChild != null) nextLevelNodes.add(nodes.get(i).LeftChild);
-            if (nodes.get(i).RightChild != null) nextLevelNodes.add(nodes.get(i).RightChild);
-            if (levelSum > currentMax[0]) {
-                levelWithMaxSum.clear();
-                levelWithMaxSum.addAll(nodes);
-                currentMax[0] = levelSum;
-            }
+        if (parentLevel.isEmpty()) nextLevelNodes.add(Root);
+        for (int i = 0; i < parentLevel.size(); i++) {
+            if (parentLevel.get(i).LeftChild != null) nextLevelNodes.add(parentLevel.get(i).LeftChild);
+            if (parentLevel.get(i).RightChild != null) nextLevelNodes.add(parentLevel.get(i).RightChild);
         }
-        if (nextLevelNodes.isEmpty()) return;
-        getNextLevelSum(nextLevelNodes, levelWithMaxSum, currentMax);
+        return nextLevelNodes;
+    }
+
+    private int getNodesSum(ArrayList<BSTNode> level) {
+        int sum = 0;
+        for (BSTNode bstNode : level) {
+            sum += bstNode.NodeKey;
+        }
+        return sum;
     }
 
     //нужны оба прохода для однозначного определения взаимного положения узлов, т.к. по префиксному проходу мы можем понять только
