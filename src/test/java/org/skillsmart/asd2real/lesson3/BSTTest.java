@@ -172,7 +172,8 @@ class BSTTest {
     void testGetLevelWithMaxSum_EmptyOrSingleRootTrees() {
         BST<Integer> tree = new BST<>(null);
         ArrayList<BSTNode> level = tree.getLevelWithMaxSum();
-        assertNull(level);
+        //assertNull(level);
+        assertTrue(level.isEmpty());
         tree = new BST<>(new BSTNode<>(12, 12, null));
         level = tree.getLevelWithMaxSum();
         assertEquals(1, level.size());

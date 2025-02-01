@@ -44,7 +44,46 @@ class aBST
 
     //TODO additional tasks
 
+    public int getLCA(int key1, int key2) {
+        if (Tree[0] == null) return -1;
+        Integer index1 = FindKeyIndex(key1);
+        Integer index2 = FindKeyIndex(key2);
+        //тут не ищу общего предка если узлов нет (index < 0), но могли бы быть (хотя в принципе ничего не мешает и у потенциальных узлов найти общего предка)
+        if (index1 == null || index2 == null || index1 < 0 || index2 < 0) return -1;
+        int level1 = (int) (Math.log(index1) / Math.log(2));
+        int level2 = (int) (Math.log(index2) / Math.log(2));
+        for (; level1 > level2; level1--) {
+            index1 = (index1 - 1) / 2;
+        }
+        for (; level2 > level1; level2--) {
+            index2 = (index2 - 1) / 2;
+        }
+        for (; !Objects.equals(Tree[index1], Tree[index2]);) {
+            index1 = (index1 - 1) / 2;
+            index2 = (index2 - 1) / 2;
+        }
+        return index1;
+    }
 
+    public void WideAllNodes() {
+        if (Tree[0] == null) return;
+        int currentLevel = 0;
+        /*ArrayList<BSTNode> nodes = new ArrayList<>();
+        Queue<BSTNode> curLevel = new LinkedList<>();
+        curLevel.add(Root);
+        for (; !curLevel.isEmpty();) {
+            int levelSize = curLevel.size();
+            for (int i = 0; i < levelSize; i++) {
+                BSTNode node = curLevel.poll();
+                nodes.add(node);
+                if (node.LeftChild != null) curLevel.add(node.LeftChild);
+                if (node.RightChild != null) curLevel.add(node.RightChild);
+            }
+            if (!processor.processLevel(nodes, currentLevel)) return;
+            currentLevel++;
+            nodes.clear();
+        }*/
+    }
 }
 
 

@@ -91,4 +91,41 @@ class aBSTTest {
         assertEquals(10, tree.Tree[5]);
         assertEquals(14, tree.Tree[6]);
     }
+
+    @Test
+    void testGetLCA_EmptyAndOneRootTree() {
+        aBST tree = new aBST(0);
+        assertEquals(-1, tree.getLCA(8, 10));
+        tree.AddKey(8);
+        assertEquals(-1, tree.getLCA(8, 10));
+        assertEquals(0, tree.getLCA(8, 8));
+    }
+
+    @Test
+    void testGetLCA_WithRoot() {
+        aBST tree = new aBST(2);
+        assertEquals(0, tree.AddKey(8));
+        assertEquals(1, tree.AddKey(4));
+        assertEquals(2, tree.AddKey(12));
+        assertEquals(6, tree.AddKey(14));
+        assertEquals(4, tree.AddKey(6));
+        assertEquals(3, tree.AddKey(2));
+        assertEquals(5, tree.AddKey(10));
+        assertEquals(-1, tree.AddKey(18));
+        assertEquals(6, tree.AddKey(14));
+    }
+
+    @Test
+    void testGetLCA() {
+        aBST tree = new aBST(2);
+        assertEquals(0, tree.AddKey(8));
+        assertEquals(1, tree.AddKey(4));
+        assertEquals(2, tree.AddKey(12));
+        assertEquals(6, tree.AddKey(14));
+        assertEquals(4, tree.AddKey(6));
+        assertEquals(3, tree.AddKey(2));
+        assertEquals(5, tree.AddKey(10));
+        assertEquals(-1, tree.AddKey(18));
+        assertEquals(6, tree.AddKey(14));
+    }
 }

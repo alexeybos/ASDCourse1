@@ -1,6 +1,8 @@
 package org.skillsmart.asd2real.lesson3;
 
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 class BSTNode<T>
 {
@@ -194,35 +196,54 @@ class BST<T>
     }
 
     public ArrayList<BSTNode> WideAllNodes() {
-        if (Root == null) return new ArrayList<BSTNode>();
         ArrayList<BSTNode> nodes = new ArrayList<>();
-        WideAllNodesBase(new LevelProcessor() {
-            @Override
-            public boolean processLevel(ArrayList<BSTNode> levelNodes, int level) {
-                nodes.addAll(levelNodes);
-                return true;
-            }
-        });
+        BiConsumer<BSTNode, Integer> add = (node, level) -> nodes.add(node);
+        BSF(add);
         return nodes;
     }
 
     public ArrayList<BSTNode> getLevelWithMaxSum() {
-        if (Root == null) return null;
-        ArrayList<BSTNode> levelWithMaxSum = new ArrayList<>();
         final int[] max = {0};
-        WideAllNodesBase(new LevelProcessor() {
-            @Override
-            public boolean processLevel(ArrayList<BSTNode> levelNodes, int level) {
-                int levelSum = getNodesSum(levelNodes);
-                if (levelSum > max[0]) {
-                    max[0] = levelSum;
-                    levelWithMaxSum.clear();
-                    levelWithMaxSum.addAll(levelNodes);
-                }
-                return true;
+        final int[] currentLevel = {0};
+        final int[] levelSum = {0};
+        ArrayList<BSTNode> result = new ArrayList<>();
+        ArrayList<BSTNode> nodes = new ArrayList<>();
+        BiConsumer<BSTNode, Integer> checkMax = (node, level) -> {
+            if (currentLevel[0] == level) {
+                levelSum[0] += node.NodeKey;
+                nodes.add(node);
+                return;
             }
-        });
-        return levelWithMaxSum;
+            currentLevel[0] = level;
+            if (levelSum[0] > max[0]) {
+                max[0] = levelSum[0];
+                result.clear();
+                result.addAll(nodes);
+            }
+            levelSum[0] = node.NodeKey;
+            nodes.clear();
+            nodes.add(node);
+        };
+        BSF(checkMax);
+        if (levelSum[0] > max[0]) return nodes;
+        return result;
+    }
+
+    private void BSF(BiConsumer<BSTNode, Integer> processNode) {
+        if (Root == null) return;
+        int currentLevel = 0;
+        Queue<BSTNode> nodes = new LinkedList<>();
+        nodes.add(Root);
+        for (; !nodes.isEmpty();) {
+            int levelSize = nodes.size();
+            for (int i = 0; i < levelSize; i++) {
+                BSTNode node = nodes.poll();
+                if (node.LeftChild != null) nodes.add(node.LeftChild);
+                if (node.RightChild != null) nodes.add(node.RightChild);
+                processNode.accept(node, currentLevel);
+            }
+            currentLevel++;
+        }
     }
 
     private void WideAllNodesBase(LevelProcessor processor) {
