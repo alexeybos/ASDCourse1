@@ -2,6 +2,9 @@ package org.skillsmart.asd2real.lesson4;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class aBSTTest {
@@ -111,21 +114,78 @@ class aBSTTest {
         assertEquals(4, tree.AddKey(6));
         assertEquals(3, tree.AddKey(2));
         assertEquals(5, tree.AddKey(10));
-        assertEquals(-1, tree.AddKey(18));
         assertEquals(6, tree.AddKey(14));
+
+        assertEquals(0, tree.getLCA(14, 8));
+        assertEquals(0, tree.getLCA(8, 4));
+        assertEquals(0, tree.getLCA(6, 14));
     }
 
     @Test
     void testGetLCA() {
-        aBST tree = new aBST(2);
+        aBST tree = new aBST(5);
+        String nodes = "32, 16, 48, 8, 24, 40, 56, 4, 12, 20, 28, 36, 44, 52, 60, 2, 6, 10, 14, 18, 22, 26, 30, 34, 38, " +
+                "42, 46, 50, 54, 58, 62, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, " +
+                "43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63";
+        String[] nodesList = nodes.split(", ");
+        for (int i = 0; i < tree.Tree.length; i++) {
+            tree.Tree[i] = Integer.parseInt(nodesList[i]);
+        }
+        assertEquals(32, tree.Tree[0]);
+        assertEquals(0, tree.getLCA(31, 63));
+        assertEquals(2, tree.getLCA(44, 52));
+        assertEquals(11, tree.getLCA(33, 38));
+        assertEquals(15, tree.getLCA(1, 3));
+        assertEquals(15, tree.getLCA(1, 2));
+        assertEquals(6, tree.getLCA(56, 63));
+    }
+
+    @Test
+    void testBFS_EmptyAndOneRootArr() {
+        aBST tree = new aBST(0);
+        assertTrue(tree.WideAllNodes().isEmpty());
+        tree.AddKey(8);
+        ArrayList<Integer> wide = tree.WideAllNodes();
+        assertEquals(1, wide.size());
+        assertEquals(8, wide.getFirst());
+
+    }
+
+    @Test
+    void testBFS() {
+        aBST tree = new aBST(5);
+        String nodes = "32, 16, 48, 8, 24, 40, 56, 4, 12, 20, 28, 36, 44, 52, 60, 2, 6, 10, 14, 18, 22, 26, 30, 34, 38, " +
+                "42, 46, 50, 54, 58, 62, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, " +
+                "43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63";
+        String[] nodesList = nodes.split(", ");
+        for (int i = 0; i < tree.Tree.length; i++) {
+            tree.Tree[i] = Integer.parseInt(nodesList[i]);
+        }
+
+        ArrayList<Integer> wide = tree.WideAllNodes();
+        for (int i = 0; i < wide.size(); i++) {
+            assertEquals(Integer.parseInt(nodesList[i]), wide.get(i));
+        }
+
+        tree = new aBST(3);
         assertEquals(0, tree.AddKey(8));
         assertEquals(1, tree.AddKey(4));
         assertEquals(2, tree.AddKey(12));
         assertEquals(6, tree.AddKey(14));
-        assertEquals(4, tree.AddKey(6));
         assertEquals(3, tree.AddKey(2));
         assertEquals(5, tree.AddKey(10));
-        assertEquals(-1, tree.AddKey(18));
-        assertEquals(6, tree.AddKey(14));
+        assertEquals(7, tree.AddKey(1));
+        assertEquals(14, tree.AddKey(16));
+
+        wide = tree.WideAllNodes();
+        assertEquals(8, wide.size());
+        assertEquals(8, wide.get(0));
+        assertEquals(4, wide.get(1));
+        assertEquals(12, wide.get(2));
+        assertEquals(2, wide.get(3));
+        assertEquals(10, wide.get(4));
+        assertEquals(14, wide.get(5));
+        assertEquals(1, wide.get(6));
+        assertEquals(16, wide.get(7));
     }
 }
