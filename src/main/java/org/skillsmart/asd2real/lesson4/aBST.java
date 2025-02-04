@@ -64,7 +64,7 @@ class aBST
     public ArrayList<Integer> WideAllNodes() {
         ArrayList<Integer> nodes = new ArrayList<>();
         BiConsumer<Integer, Integer> add = (node, level) -> nodes.add(node);
-        BFS(add);
+        BFSFullTraversal(add);
         return nodes;
     }
 
@@ -97,6 +97,115 @@ class aBST
                 processNode.accept(Tree[i], (int) (Math.log(i + 1) / Math.log(2)));
             }
         }
+    }
+
+    //Сложность - time: O(n*logn) из-за использования сортировки при пересоздании дерева (в худшем в принципе даже может O(n^2)); память - O(n)
+    public boolean deleteKey(int key) {
+        if (Tree[0] == null) return false;
+        Integer index = FindKeyIndex(key);
+        if (index == null || index < 0) return false;
+        Tree[index] = null;
+        reGenerateTree();
+        return true;
+    }
+
+    public void reGenerateTree() {
+        ArrayList<Integer> wideArr = WideAllNodes();
+        Collections.sort(wideArr);
+        Arrays.fill(Tree, null);
+        generateSubTree(wideArr, 0, 0, wideArr.size() - 1);
+    }
+
+    private void generateSubTree(ArrayList<Integer> a, int rootInd, int start, int end) {
+        if (start > end && rootInd >= a.size()) return;
+        if (start > end) {
+            Tree[rootInd] = null;
+            return;
+        }
+        int midInd = (start + end) / 2;
+        Tree[rootInd] = a.get(midInd);
+        generateSubTree(a,rootInd * 2 + 1, start, midInd - 1);
+        generateSubTree(a,rootInd * 2 + 2, midInd + 1, end);
+    }
+
+    //сложность: time - поиск узла O(log n), сама замена O(h). Пространство - O(h) - глубина рекурсии для "подтягивания" потомков
+    public boolean removeKey(int key) {
+        if (Tree[0] == null) return false;
+        Integer index = FindKeyIndex(key);
+        if (index == null || index < 0) return false;
+        int leftChildInd = index * 2 + 1;
+        int rightChildInd = index * 2 + 2;
+        Integer leftChild = null;
+        Integer rightChild = null;
+        if (leftChildInd < Tree.length) leftChild = Tree[leftChildInd];
+        if (rightChildInd < Tree.length) rightChild = Tree[rightChildInd];
+        //лист
+        if (leftChild == null && rightChild == null) {
+            Tree[index] = null;
+            return true;
+        }
+        //есть только левый
+        if (rightChild == null) {
+            Tree[index] = leftChild;
+            Tree[leftChildInd] = null;
+            adjustChildren(leftChildInd, index);
+            return true;
+        }
+        //только правый
+        if (leftChild == null) {
+            Tree[index] = rightChild;
+            Tree[rightChildInd] = null;
+            adjustChildren(rightChildInd, index);
+            return true;
+        }
+        //есть оба
+        int deepNodeInd = rightChildInd;
+        int nextInd = rightChildInd * 2 + 1;
+        for (; nextInd < Tree.length && Tree[nextInd] != null; nextInd = nextInd * 2 + 1) {
+            deepNodeInd = deepNodeInd * 2 + 1;
+        }
+
+        //есть правый
+        rightChildInd = deepNodeInd * 2 + 2;
+        if (rightChildInd < Tree.length && Tree[rightChildInd] != null) {
+            Tree[index] = Tree[deepNodeInd];
+            Tree[deepNodeInd] = Tree[rightChildInd];
+            //надо "поднять" всех наследников
+            adjustChildren(rightChildInd, deepNodeInd);
+            return true;
+        }
+        Tree[index] = Tree[deepNodeInd];
+        Tree[deepNodeInd] = null;
+        return true;
+    }
+
+    private void adjustChildren(int oldInd, int newInd) {
+        //"поднимаем" наследников на новое место
+        int leftChild = oldInd * 2 + 1;
+        int newLeftInd = newInd * 2 + 1;
+        if (leftChild < Tree.length && Tree[leftChild] != null) {
+            Tree[newLeftInd] = Tree[leftChild];
+            Tree[leftChild] = null;
+            adjustChildren(leftChild, newLeftInd);
+        }
+        int rightChild = oldInd * 2 + 1;
+        int newRightInd = newInd * 2 + 2;
+        if (rightChild < Tree.length && Tree[rightChild] != null) {
+            Tree[newRightInd] = Tree[rightChild];
+            Tree[rightChild] = null;
+            adjustChildren(leftChild, newLeftInd);
+        }
+    }
+
+
+
+    private void reBalance() {
+
+    }
+
+    private boolean isNeedReBalance(){
+
+        return true;
     }
 }
 

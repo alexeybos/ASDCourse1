@@ -1,6 +1,7 @@
 package org.skillsmart.asd2real.lesson4;
 
 import org.junit.jupiter.api.Test;
+import org.skillsmart.asd2real.lesson5.AlgorithmsDataStructures2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -187,5 +188,64 @@ class aBSTTest {
         assertEquals(14, wide.get(5));
         assertEquals(1, wide.get(6));
         assertEquals(16, wide.get(7));
+    }
+
+    @Test
+    void testDeleteKey_EmptyOrOneRootTree() {
+        aBST tree = new aBST(0);
+        assertFalse(tree.deleteKey(5));
+        tree.AddKey(8);
+        assertFalse(tree.deleteKey(5));
+        assertTrue(tree.deleteKey(8));
+        assertNull(tree.Tree[0]);
+    }
+
+    @Test
+    void testDeleteKey() {
+        aBST tree = new aBST(3);
+        int[] arr = new int[]{8, 4, 12, 2, 6, 10, 14, 1, 3, 7, 5, 9, 11, 15, 13};
+        int[] bbst = AlgorithmsDataStructures2.GenerateBBSTArray(arr);
+        for (int i = 0; i < arr.length; i++) {
+            tree.Tree[i] = bbst[i];
+        }
+        tree.deleteKey(6);
+        tree.deleteKey(5);
+        tree.deleteKey(7);
+        tree.deleteKey(14);
+        tree.deleteKey(7);
+        tree.deleteKey(11);
+        tree.deleteKey(15);
+
+        tree.deleteKey(15);
+        tree.deleteKey(4);
+        tree.deleteKey(13);
+        assertEquals(8, tree.Tree[0]);
+        for (int i = 7; i < tree.Tree.length; i++) {
+            assertNull(tree.Tree[i]);
+        }
+    }
+
+    @Test
+    void testRemoveKey_EmptyOrOneRootTree() {
+        aBST tree = new aBST(0);
+        assertFalse(tree.deleteKey(5));
+        tree.AddKey(8);
+        assertFalse(tree.removeKey(5));
+        assertTrue(tree.removeKey(8));
+        assertNull(tree.Tree[0]);
+    }
+
+    @Test
+    void testRemoveKey() {
+        aBST tree = new aBST(3);
+        int[] arr = new int[]{8, 4, 12, 2, 6, 10, 14, 1, 3, 7, 5, 9, 11, 15, 13};
+        int[] bbst = AlgorithmsDataStructures2.GenerateBBSTArray(arr);
+        for (int i = 0; i < arr.length; i++) {
+            tree.Tree[i] = bbst[i];
+        }
+        tree.removeKey(6);
+        assertEquals(7, tree.Tree[4]);
+        tree.removeKey(12);
+        assertEquals(13, tree.Tree[2]);
     }
 }
