@@ -1,4 +1,4 @@
-package org.skillsmart.asd3.lesson6;
+package org.skillsmart.asd2real.lesson6;
 
 import java.util.*;
 
@@ -44,7 +44,7 @@ class BalancedBST
         return node;
     }
 
-    //Сложность: time O(n), память O(h^2), где h высота дерева
+    //Сложность: time O(n), память O(h), где h высота дерева
     public boolean IsBalanced(BSTNode root_node)
     {
         return checkTreeDepth(root_node) != -1;
@@ -58,17 +58,6 @@ class BalancedBST
         if (right == -1) return -1;
         if (Math.abs(left - right) > 1) return -1;
         return Math.max(left, right) + 1;
-    }
-
-    private int checkDeepestLevel(BSTNode node, int parentLevel) {
-        if (node == null) return parentLevel;
-        //if (node.LeftChild == null && node.RightChild == null) return node.Level;
-        int leftSubTreeLevel = checkDeepestLevel(node.LeftChild, node.Level);
-        if (leftSubTreeLevel == -1) return -1;
-        int rightSubTreeLevel = checkDeepestLevel(node.RightChild, node.Level);
-        if (rightSubTreeLevel == -1) return -1;
-        if (Math.abs(leftSubTreeLevel - rightSubTreeLevel) > 1) return -1;
-        return Math.max(leftSubTreeLevel, rightSubTreeLevel) + node.Level;
     }
 
     //Сложность: time O(n), память O(h), где h высота дерева
@@ -88,6 +77,5 @@ class BalancedBST
     }
 
 }
-
 
 
