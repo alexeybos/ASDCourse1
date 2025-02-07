@@ -190,11 +190,20 @@ class HeapTest {
         Heap heap = new Heap();
         int[] arr = new int[0];
         heap.MakeHeap(arr, 0);
-        assertEquals(-1, heap.findMaxInRange(1, 10));
+        assertNull(heap.findMaxInRange(1, 10));
         heap.Add(8);
         assertEquals(8, heap.findMaxInRange(1, 10));
-        assertEquals(-1, heap.findMaxInRange(9, 50));
-        assertEquals(-1, heap.findMaxInRange(1, 7));
+        assertNull(heap.findMaxInRange(9, 50));
+        assertNull(heap.findMaxInRange(1, 7));
+    }
+
+    @Test
+    void testFindMaxInRange_WithNullsInRange() {
+        Heap heap = new Heap();
+        int[] arr = {8, 4};
+        heap.MakeHeap(arr, 1);
+        assertEquals(8, heap.findMaxInRange(1, null));
+        assertEquals(4, heap.findMaxInRange(null, 6));
     }
 
     @Test
@@ -203,7 +212,7 @@ class HeapTest {
         int[] arr = new int[]{8, 4, 12, 2, 6, 14, 1, 3, 7, 5, 9, 11, 15};
         heap.MakeHeap(arr, 3);
         assertEquals(15, heap.findMaxInRange(10, 20));
-        assertEquals(-1, heap.findMaxInRange(10, 10));
+        assertNull(heap.findMaxInRange(10, 10));
         assertEquals(9, heap.findMaxInRange(5, 10));
     }
 
@@ -276,5 +285,20 @@ class HeapTest {
         assertEquals(2, heap.GetMax());
         assertEquals(1, heap.GetMax());
         assertEquals(-1, heap.GetMax());
+
+        assertEquals(15, heap2.HeapArray[0]);
+        assertEquals(14, heap2.HeapArray[1]);
+
+        assertEquals(15, heap2.GetMax());
+        assertEquals(14, heap2.GetMax());
+        assertEquals(12, heap2.GetMax());
+        assertEquals(11, heap2.GetMax());
+        assertEquals(9, heap2.GetMax());
+        assertEquals(7, heap2.GetMax());
+        assertEquals(6, heap2.GetMax());
+        assertEquals(5, heap2.GetMax());
+        assertEquals(3, heap2.GetMax());
+        assertEquals(2, heap2.GetMax());
+        assertEquals(1, heap2.GetMax());
     }
 }

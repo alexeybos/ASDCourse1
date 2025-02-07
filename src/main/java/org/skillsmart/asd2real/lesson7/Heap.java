@@ -35,7 +35,6 @@ class Heap
 
     private void checkChildren(int i) {
         int childIndex = (2 * i + 1);
-        //выберем макс из детей
         if (childIndex > lastInHeap) return;
         if (childIndex + 1 <= lastInHeap && HeapArray[childIndex] < HeapArray[childIndex + 1]) {
             childIndex++;
@@ -91,29 +90,36 @@ class Heap
         int nextChild = i * 2 + 1;
         if (nextChild > lastInHeap) return true;
         if (HeapArray[nextChild] > HeapArray[i]) return false;
-        boolean checkChild = isChildrenCorrect(nextChild);
-        nextChild++;
-        if (checkChild && nextChild > lastInHeap) return true;
-        if (checkChild && HeapArray[nextChild] < HeapArray[i]) return isChildrenCorrect(nextChild);
+        if (nextChild + 1 > lastInHeap) return true;
+        if (HeapArray[nextChild + 1] > HeapArray[i]) return false;
+        if (isChildrenCorrect(nextChild)) return isChildrenCorrect(nextChild + 1);
         return false;
     }
 
     //Сложность: time O(n), память O(1)
-    public int findMaxInRange(int start, int end) {
-        if (lastInHeap == -1) return -1;
-        if (HeapArray[0] < start) return -1;
-        int max = -1;
+    public Integer findMaxInRange(Integer start, Integer end) {
+        if (lastInHeap == -1) return null;
+        if (end == null) return HeapArray[0];
+        if (start != null && HeapArray[0] < start) return null;
+        Integer max = null;
         for (int i = 0; i <= lastInHeap; i++) {
-            if (HeapArray[i] >= start && HeapArray[i] <= end && HeapArray[i] > max) max = HeapArray[i];
+            if ((start == null || HeapArray[i] >= start)
+                    && HeapArray[i] <= end && (max == null || HeapArray[i] > max)) max = HeapArray[i];
         }
         return max;
     }
 
-    //Сложность: time O(n*logn), память O(depth)
+    //Сложность c GetMax (с разрушением кучи-параметра): time O(n*logn), память O(depth)
+    //Сложность c findMaxInRange (без разрушения): time O(n^2), память O(depth)
     public void union(Heap heap) {
-        for (int i = heap.GetMax(); i != -1; i = heap.GetMax()) {
-            Add(i);
+        for (Integer max = heap.peek(); max != null; max = heap.findMaxInRange(null, max - 1)) {
+            Add(max);
         }
+    }
+
+    public int peek() {
+        if (lastInHeap == -1) return -1;
+        return HeapArray[0];
     }
 }
 
