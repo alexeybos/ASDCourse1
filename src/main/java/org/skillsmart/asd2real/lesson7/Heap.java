@@ -28,18 +28,19 @@ class Heap
         HeapArray[0] = HeapArray[lastInHeap];
         HeapArray[lastInHeap] = 0;
         lastInHeap--;
+
         checkChildren(0);
         return max;
     }
 
     private void checkChildren(int i) {
         int childIndex = (2 * i + 1);
-        if (childIndex <= lastInHeap && HeapArray[childIndex] > HeapArray[i]) {
-            swap(childIndex, i);
-            checkChildren(childIndex);
+        //выберем макс из детей
+        if (childIndex > lastInHeap) return;
+        if (childIndex + 1 <= lastInHeap && HeapArray[childIndex] < HeapArray[childIndex + 1]) {
+            childIndex++;
         }
-        childIndex++;
-        if (childIndex <= lastInHeap && HeapArray[childIndex] > HeapArray[i]) {
+        if (HeapArray[childIndex] > HeapArray[i]) {
             swap(childIndex, i);
             checkChildren(childIndex);
         }

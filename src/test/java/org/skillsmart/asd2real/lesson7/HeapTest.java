@@ -52,10 +52,28 @@ class HeapTest {
         int[] arr = new int[0];
         heap.MakeHeap(arr, 0);
         assertEquals(-1, heap.GetMax());
+        assertTrue(heap.isCorrect());
         arr = new int[]{8};
         heap.MakeHeap(arr, 0);
         assertEquals(8, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(-1, heap.GetMax());
+        assertTrue(heap.isCorrect());
+    }
+
+    @Test
+    void testGetMax_WithFillingCheck() {
+        Heap heap = new Heap();
+        int[] arr = {11,7,9,5};
+        heap.MakeHeap(arr, 2);
+        for (int i = 0; i < arr.length; i++) {
+            heap.HeapArray[i] = arr[i];
+        }
+        assertEquals(11, heap.GetMax());
+        assertEquals(9, heap.HeapArray[0]);
+        assertEquals(7, heap.HeapArray[1]);
+        assertEquals(5, heap.HeapArray[2]);
+        assertTrue(heap.isCorrect());
     }
 
     @Test
@@ -64,19 +82,32 @@ class HeapTest {
         int[] arr = new int[]{8, 4, 12, 2, 6, 14, 1, 3, 7, 5, 9, 11, 15};
         heap.MakeHeap(arr, 3);
         assertEquals(15, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(14, heap.HeapArray[0]);
         assertEquals(14, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(12, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(11, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(9, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(8, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(7, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(6, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(5, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(4, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(3, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(2, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(1, heap.GetMax());
+        assertTrue(heap.isCorrect());
         assertEquals(-1, heap.GetMax());
     }
 
