@@ -110,7 +110,7 @@ class Heap
     }
 
     //Сложность c GetMax (с разрушением кучи-параметра): time O(n*logn), память O(depth)
-    //Сложность c findMaxInRange (без разрушения): time O(n^2), память O(depth)
+    //Сложность c findMaxInRange (без разрушения): time O(n*logn), память O(depth)
     public void union(Heap heap) {
         for (Integer max = heap.peek(); max != null; max = heap.findMaxInRange(null, max - 1)) {
             Add(max);
