@@ -122,8 +122,8 @@ class Heap
     }
 
     public ArrayList<Integer> findMaxInRangeWithOutNulls(int start, int end) {
-        Stack<Integer> max = new Stack<>();
         if (lastInHeap == -1 || HeapArray[0] < start) return new ArrayList<>();
+        Stack<Integer> max = new Stack<>();
         for (int i = 0; i <= lastInHeap; i++) {
             int el = HeapArray[i];
             if (el >= start && el <= end && (max.empty() || el > max.peek())) max.push(el);
