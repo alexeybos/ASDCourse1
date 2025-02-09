@@ -12,6 +12,20 @@ class Heap
         lastInHeap = -1;
     }
 
+    private Heap(Heap heap) {
+        HeapArray = new int [heap.HeapArray.length];
+        System.arraycopy(heap.HeapArray, 0, this.HeapArray, 0, heap.HeapArray.length);
+        lastInHeap = heap.getLastInHeap();
+    }
+
+    public int getLastInHeap() {
+        return lastInHeap;
+    }
+
+    public Heap copy() {
+        return new Heap(this);
+    }
+
     public void MakeHeap(int[] a, int depth)
     {
         int heapSize = (int) Math.pow(2, depth + 1) - 1;
@@ -28,20 +42,19 @@ class Heap
         HeapArray[0] = HeapArray[lastInHeap];
         HeapArray[lastInHeap] = 0;
         lastInHeap--;
-
         checkChildren(0);
         return max;
     }
 
     private void checkChildren(int i) {
-        int childIndex = (2 * i + 1);
-        if (childIndex > lastInHeap) return;
-        if (childIndex + 1 <= lastInHeap && HeapArray[childIndex] < HeapArray[childIndex + 1]) {
-            childIndex++;
+        int childToCheckInd = (2 * i + 1);
+        if (childToCheckInd > lastInHeap) return;
+        if (childToCheckInd + 1 <= lastInHeap && HeapArray[childToCheckInd] < HeapArray[childToCheckInd + 1]) {
+            childToCheckInd++;
         }
-        if (HeapArray[childIndex] > HeapArray[i]) {
-            swap(childIndex, i);
-            checkChildren(childIndex);
+        if (HeapArray[childToCheckInd] > HeapArray[i]) {
+            swap(childToCheckInd, i);
+            checkChildren(childToCheckInd);
         }
     }
 
@@ -52,21 +65,18 @@ class Heap
         HeapArray[lastInHeap] = key;
         for (int i = lastInHeap; i > 0; i = (i - 1) / 2) {
             int parentIndex = (i - 1) / 2;
-            if (HeapArray[parentIndex] < HeapArray[i]) {
-                swap(parentIndex, i);
-            } else {
-                int childIndex = (2 * i + 1);
-                if (childIndex <= lastInHeap && HeapArray[childIndex] > key) {
-                    swap(childIndex, i);
-                    return true;
-                }
-                childIndex++;
-                if (childIndex <= lastInHeap && HeapArray[childIndex] > key) {
-                    swap(childIndex, i);
-                    return true;
-                }
+            int leftChildIndex = (2 * i + 1);
+            if (HeapArray[parentIndex] >= HeapArray[i] && isChildGreater(leftChildIndex, key)) {
+                swap(leftChildIndex, i);
                 return true;
             }
+            int rightChildIndex = leftChildIndex + 1;
+            if (HeapArray[parentIndex] >= HeapArray[i] && isChildGreater(rightChildIndex, key)) {
+                swap(rightChildIndex, i);
+                return true;
+            }
+            if (HeapArray[parentIndex] >= HeapArray[i]) return true;
+            swap(parentIndex, i);
         }
         return true;
     }
@@ -81,39 +91,52 @@ class Heap
 
     //Сложность: time O(n), память O(depth)
     public boolean isCorrect() {
-        if (lastInHeap < 2) return true;
+        if (lastInHeap < 1) return true;
         return isChildrenCorrect(0);
     }
 
     private boolean isChildrenCorrect(int i) {
         if (i > lastInHeap) return true;
-        int nextChild = i * 2 + 1;
-        if (nextChild > lastInHeap) return true;
-        if (HeapArray[nextChild] > HeapArray[i]) return false;
-        if (nextChild + 1 > lastInHeap) return true;
-        if (HeapArray[nextChild + 1] > HeapArray[i]) return false;
-        if (isChildrenCorrect(nextChild)) return isChildrenCorrect(nextChild + 1);
+        int leftChildInd = i * 2 + 1;
+        int rightChildInd = leftChildInd + 1;
+        if (isChildGreater(leftChildInd, HeapArray[i]) || isChildGreater(rightChildInd, HeapArray[i])) return false;
+
+        if (isChildrenCorrect(leftChildInd)) return isChildrenCorrect(rightChildInd);
         return false;
     }
 
+    private boolean isChildGreater(int childInd, int key) {
+        if (childInd > lastInHeap) return false;
+        return HeapArray[childInd] > key;
+    }
+
     //Сложность: time O(n), память O(1)
-    public Integer findMaxInRange(Integer start, Integer end) {
-        if (lastInHeap == -1) return null;
-        if (end == null) return HeapArray[0];
-        if (start != null && HeapArray[0] < start) return null;
+    public Integer findMaxInRange(int start, int end) {
+        if (lastInHeap == -1 || HeapArray[0] < start) return null;
         Integer max = null;
         for (int i = 0; i <= lastInHeap; i++) {
-            if ((start == null || HeapArray[i] >= start)
-                    && HeapArray[i] <= end && (max == null || HeapArray[i] > max)) max = HeapArray[i];
+            int el = HeapArray[i];
+            if (el >= start && el <= end && (max == null || el > max)) max = (el);
         }
         return max;
     }
 
-    //Сложность c GetMax (с разрушением кучи-параметра): time O(n*logn), память O(depth)
-    //Сложность c findMaxInRange (без разрушения): time O(n*logn), память O(depth)
+    public ArrayList<Integer> findMaxInRangeWithOutNulls(int start, int end) {
+            ArrayList<Integer> max = new ArrayList<>();
+            if (lastInHeap == -1 || HeapArray[0] < start) return new ArrayList<>();
+            for (int i = 0; i <= lastInHeap; i++) {
+                int el = HeapArray[i];
+                if (el >= start && el <= end && (max.isEmpty() || el > max.getFirst())) max.addFirst(el);
+            }
+            if (max.isEmpty()) return max;
+            return new ArrayList<>(max.subList(0, 1));
+        }
+
+    //Сложность: time O(n*logn), память O(depth)
     public void union(Heap heap) {
-        for (Integer max = heap.peek(); max != null; max = heap.findMaxInRange(null, max - 1)) {
-            Add(max);
+        Heap tmpHeap = heap.copy();
+        for (int el = tmpHeap.GetMax(); el != -1; el = tmpHeap.GetMax()) {
+            Add(el);
         }
     }
 

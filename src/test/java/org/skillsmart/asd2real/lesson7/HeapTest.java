@@ -190,6 +190,7 @@ class HeapTest {
         Heap heap = new Heap();
         int[] arr = new int[0];
         heap.MakeHeap(arr, 0);
+        //assertTrue(heap.findMaxInRange(1, 10).isEmpty());
         assertNull(heap.findMaxInRange(1, 10));
         heap.Add(8);
         assertEquals(8, heap.findMaxInRange(1, 10));
@@ -202,8 +203,10 @@ class HeapTest {
         Heap heap = new Heap();
         int[] arr = {8, 4};
         heap.MakeHeap(arr, 1);
-        assertEquals(8, heap.findMaxInRange(1, null));
-        assertEquals(4, heap.findMaxInRange(null, 6));
+        assertEquals(8, heap.findMaxInRange(1, 10));
+        assertEquals(4, heap.findMaxInRange(1, 6));
+        //assertEquals(8, heap.findMaxInRange(1, 10).getFirst());
+        //assertEquals(4, heap.findMaxInRange(1, 6).getFirst());
     }
 
     @Test
@@ -211,8 +214,11 @@ class HeapTest {
         Heap heap = new Heap();
         int[] arr = new int[]{8, 4, 12, 2, 6, 14, 1, 3, 7, 5, 9, 11, 15};
         heap.MakeHeap(arr, 3);
+        //assertEquals(15, heap.findMaxInRange(10, 20).getFirst());
         assertEquals(15, heap.findMaxInRange(10, 20));
+        //assertTrue(heap.findMaxInRange(10, 10).isEmpty());
         assertNull(heap.findMaxInRange(10, 10));
+        //assertEquals(9, heap.findMaxInRange(5, 10).getFirst());
         assertEquals(9, heap.findMaxInRange(5, 10));
     }
 
