@@ -122,6 +122,17 @@ class Heap
     }
 
     public ArrayList<Integer> findMaxInRangeWithOutNulls(int start, int end) {
+        Stack<Integer> max = new Stack<>();
+        if (lastInHeap == -1 || HeapArray[0] < start) return new ArrayList<>();
+        for (int i = 0; i <= lastInHeap; i++) {
+            int el = HeapArray[i];
+            if (el >= start && el <= end && (max.empty() || el > max.peek())) max.push(el);
+        }
+        if (max.empty()) return new ArrayList<>();
+        return new ArrayList<>(Collections.singletonList(max.pop()));
+    }
+
+    public ArrayList<Integer> findMaxInRangeWithOutNullsByArr(int start, int end) {
             ArrayList<Integer> max = new ArrayList<>();
             if (lastInHeap == -1 || HeapArray[0] < start) return new ArrayList<>();
             for (int i = 0; i <= lastInHeap; i++) {
@@ -130,7 +141,7 @@ class Heap
             }
             if (max.isEmpty()) return max;
             return new ArrayList<>(max.subList(0, 1));
-        }
+    }
 
     //Сложность: time O(n*logn), память O(depth)
     public void union(Heap heap) {
