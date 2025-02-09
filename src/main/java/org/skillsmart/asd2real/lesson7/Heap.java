@@ -22,7 +22,7 @@ class Heap
         return lastInHeap;
     }
 
-    public Heap copy() {
+    private Heap copy() {
         return new Heap(this);
     }
 
@@ -149,6 +149,14 @@ class Heap
         for (int el = tmpHeap.GetMax(); el != -1; el = tmpHeap.GetMax()) {
             Add(el);
         }
+    }
+
+    public Heap unionByClone(Heap heap) {
+        Heap tmpHeap = this.copy();
+        for (int el = tmpHeap.GetMax(); el != -1; el = tmpHeap.GetMax()) {
+            heap.Add(el);
+        }
+        return heap;
     }
 
     public int peek() {

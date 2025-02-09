@@ -307,4 +307,35 @@ class HeapTest {
         assertEquals(2, heap2.GetMax());
         assertEquals(1, heap2.GetMax());
     }
+
+    @Test
+    void testUnionByClone() {
+        Heap heap = new Heap();
+        int[] arr = {8, 4};
+        heap.MakeHeap(arr, 3);
+        Heap heap2 = new Heap();
+        int[] arr2 = new int[]{12, 2, 6, 14, 1, 3, 7, 5, 9, 11, 15};
+        heap2.MakeHeap(arr2, 3);
+        Heap heap3 = heap.unionByClone(heap2);
+        assertEquals(15, heap3.HeapArray[0]);
+        assertTrue(heap3.isCorrect());
+        assertEquals(15, heap3.GetMax());
+        assertEquals(14, heap3.HeapArray[0]);
+        assertEquals(14, heap3.GetMax());
+        assertEquals(12, heap3.GetMax());
+        assertEquals(11, heap3.GetMax());
+        assertEquals(9, heap3.GetMax());
+        assertEquals(8, heap3.GetMax());
+        assertEquals(7, heap3.GetMax());
+        assertEquals(6, heap3.GetMax());
+        assertEquals(5, heap3.GetMax());
+        assertEquals(4, heap3.GetMax());
+        assertEquals(3, heap3.GetMax());
+        assertEquals(2, heap3.GetMax());
+        assertEquals(1, heap3.GetMax());
+        assertEquals(-1, heap3.GetMax());
+
+        assertEquals(8, heap.HeapArray[0]);
+        assertEquals(4, heap.HeapArray[1]);
+    }
 }
