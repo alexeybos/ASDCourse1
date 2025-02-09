@@ -116,7 +116,7 @@ class Heap
         Integer max = null;
         for (int i = 0; i <= lastInHeap; i++) {
             int el = HeapArray[i];
-            if (el >= start && el <= end && (max == null || el > max)) max = (el);
+            if (el >= start && el <= end && (max == null || el > max)) max = el;
         }
         return max;
     }
