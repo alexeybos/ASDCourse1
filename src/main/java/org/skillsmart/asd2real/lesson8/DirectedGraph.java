@@ -49,17 +49,17 @@ public class DirectedGraph {
         //0 - white, 1 - grey, 2 - black
         int[] color = new int[max_vertex];
         for (int i = 0; i < max_vertex; i++) {
-            if (color[i] == 0 && dfs(color, i)) return true;
+            if (color[i] == 0 && hasCycles(color, i)) return true;
         }
         return false;
     }
 
-    private boolean dfs(int[] color, int v) {
+    private boolean hasCycles(int[] color, int v) {
         if (color[v] == 2) return false;
         if (color[v] == 1) return true;
         color[v] = 1;
         for (int i = 0; i < max_vertex; i++) {
-            if (m_adjacency[v][i] == 1 && dfs(color, i)) return true;
+            if (m_adjacency[v][i] == 1 && hasCycles(color, i)) return true;
         }
         color[v] = 2;
         return false;
