@@ -128,20 +128,6 @@ class SimpleTree<T>
         return toDelete;
     }
 
-    private int findEvenSubTreesByChildrenCnt(SimpleTreeNode<T> root, ArrayList<T> cutPositions) {
-        if (root.Children == null) return 1;
-        int childrenCnt = 0;
-        for (int i = 0; i < root.Children.size(); i++) {
-            int chCnt = findEvenSubTreesByChildrenCnt(root.Children.get(i), cutPositions);
-            if (chCnt != 0 && chCnt % 2 == 0) cutPositions.addAll(Arrays.asList(root.NodeValue, root.Children.get(i).NodeValue));
-            childrenCnt += chCnt;
-        }
-        childrenCnt++;
-        return childrenCnt;
-    }
-
-    //TODO additional tasks
-
     //Сложность: time O(n), память O(n)
     public void balanceBinaryTree(SimpleTree<T> tree) {
         if (tree.Root == null) return;
@@ -187,6 +173,18 @@ class SimpleTree<T>
         ArrayList<T> pairs = new ArrayList<>();
         findEvenSubTreesByChildrenCnt(root, pairs);
         return pairs.size() / 2;
+    }
+
+    private int findEvenSubTreesByChildrenCnt(SimpleTreeNode<T> root, ArrayList<T> cutPositions) {
+        if (root.Children == null) return 1;
+        int childrenCnt = 0;
+        for (int i = 0; i < root.Children.size(); i++) {
+            int chCnt = findEvenSubTreesByChildrenCnt(root.Children.get(i), cutPositions);
+            if (chCnt != 0 && chCnt % 2 == 0) cutPositions.addAll(Arrays.asList(root.NodeValue, root.Children.get(i).NodeValue));
+            childrenCnt += chCnt;
+        }
+        childrenCnt++;
+        return childrenCnt;
     }
 }
 
