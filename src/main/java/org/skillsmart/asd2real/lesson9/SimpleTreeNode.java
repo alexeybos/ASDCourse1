@@ -183,8 +183,7 @@ class SimpleTree<T>
             if (chCnt != 0 && chCnt % 2 == 0) cutPositions.addAll(Arrays.asList(root.NodeValue, root.Children.get(i).NodeValue));
             childrenCnt += chCnt;
         }
-        childrenCnt++;
-        return childrenCnt;
+        return childrenCnt + 1;
     }
 }
 
