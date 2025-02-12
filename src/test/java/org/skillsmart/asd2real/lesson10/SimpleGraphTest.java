@@ -84,7 +84,7 @@ class SimpleGraphTest {
         assertEquals(16, res.get(1).Value);
     }
 
-    /*@Test
+    @Test
     void testIsConnected_EmptyGraph() {
         SimpleGraph graph = new SimpleGraph(3);
         assertFalse(graph.isConnected());
@@ -108,5 +108,5 @@ class SimpleGraphTest {
         assertFalse(graph.isConnected());
         graph.AddEdge(2, 5);
         assertTrue(graph.isConnected());
-    }*/
+    }
 }

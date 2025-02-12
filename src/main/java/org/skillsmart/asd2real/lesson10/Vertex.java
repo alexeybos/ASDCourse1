@@ -1,7 +1,7 @@
 package org.skillsmart.asd2real.lesson10;
 
 import java.util.*;
-//import java.util.function.Function;
+import java.util.function.Function;
 
 class Vertex
 {
@@ -67,16 +67,6 @@ class SimpleGraph
         if (vCnt == 0 || vertex[VFrom] == null || vertex[VTo] == null) return new ArrayList<>();
 
         Stack<Vertex> path = new Stack<>();
-        dfsFromVertex(VFrom, path, VTo);
-        return new ArrayList<>(path);
-    }
-
-    /*public ArrayList<Vertex> DepthFirstSearchWithFunction(int VFrom, int VTo)
-    {
-        int vCnt = markVertexUnHitAndCount();
-        if (vCnt == 0 || vertex[VFrom] == null || vertex[VTo] == null) return new ArrayList<>();
-
-        Stack<Vertex> path = new Stack<>();
         Function<Integer, Boolean> checkVTo = (index) -> {
             if (m_adjacency[index][VTo] == 1) {
                 path.push(vertex[VTo]);
@@ -86,26 +76,9 @@ class SimpleGraph
         };
         dfsFromVertex(VFrom, path, checkVTo);
         return new ArrayList<>(path);
-    }*/
-
-    private boolean dfsFromVertex(Integer vInd, Stack<Vertex> savedPath, int VTo) {
-        if (vertex[vInd] == null || vertex[vInd].Hit) return false;
-        vertex[vInd].Hit = true;
-        savedPath.push(vertex[vInd]);
-        if (m_adjacency[vInd][VTo] == 1) {
-            savedPath.push(vertex[VTo]);
-            return true;
-        }
-        for (int i = 0; i < vertex.length; i++) {
-            boolean endProcess = false;
-            if (m_adjacency[vInd][i] == 1 && !vertex[i].Hit) endProcess = dfsFromVertex(i, savedPath, VTo);
-            if (endProcess) return true;
-        }
-        savedPath.pop();
-        return false;
     }
 
-    /*private boolean dfsFromVertex(Integer vInd, Stack<Vertex> savedPath, Function<Integer, Boolean> processNodeAndExit) {
+    private boolean dfsFromVertex(Integer vInd, Stack<Vertex> savedPath, Function<Integer, Boolean> processNodeAndExit) {
         if (vertex[vInd] == null || vertex[vInd].Hit) return false;
         vertex[vInd].Hit = true;
         if (savedPath != null) savedPath.push(vertex[vInd]);
@@ -129,7 +102,7 @@ class SimpleGraph
             if (value != null && !value.Hit) return false;
         }
         return true;
-    }*/
+    }
 
     private int markVertexUnHitAndCount() {
         int vCnt = 0;
