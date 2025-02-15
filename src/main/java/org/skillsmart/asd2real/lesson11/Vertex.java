@@ -103,41 +103,41 @@ class SimpleGraph
     {
         int vCnt = markVertexUnHitAndCount();
         if (vCnt == 0 || vertex[VFrom] == null || vertex[VTo] == null) return new ArrayList<>();
-        Map<Integer, Vertex> path = bfsFromVertex(VFrom, VTo);
-        ArrayList<Vertex> result = new ArrayList<>();
-        for (int i = 0; i < path.size(); i++) {
-            result.add(path.get(i));
-        }
-        return result;
+        int[] pathByParents = bfsFromVertex(VFrom, VTo);
+        return makeResultPath(pathByParents, VTo);
     }
 
-    private Map<Integer, Vertex> bfsFromVertex(Integer VFrom, int VTo) {
+    private int[] bfsFromVertex(Integer VFrom, int VTo) {
         Queue<Integer> vertexesQ = new LinkedList<>();
-        Map<Integer, Vertex> route = new HashMap<>();
         int[] lastParents = new int[max_vertex];
+        Arrays.fill(lastParents, -1);
         vertexesQ.add(VFrom);
-        int level = 0;
         for (; !vertexesQ.isEmpty();) {
-            int levelSize = vertexesQ.size();
-            for (int l = 0; l < levelSize; l++) {
-                int vInd = vertexesQ.remove();
-                route.put(level, vertex[vInd]);
-                lastParents[]
-                if (m_adjacency[vInd][VTo] == 1) {
-                    route.put(level + 1, vertex[VTo]);
-                    return route;
-                }
-                vertex[vInd].Hit = true;
-                for (int i = 0; i < vertex.length; i++) {
-                    if (m_adjacency[vInd][i] == 1 && !vertex[i].Hit) {
-                        vertex[i].Hit = true;
-                        vertexesQ.add(i);
-                    }
+            int vInd = vertexesQ.remove();
+            if (m_adjacency[vInd][VTo] == 1) {
+                lastParents[VTo] = vInd;
+                return lastParents;
+            }
+            vertex[vInd].Hit = true;
+            for (int i = 0; i < vertex.length; i++) {
+                if (m_adjacency[vInd][i] == 1 && !vertex[i].Hit) {
+                    vertex[i].Hit = true;
+                    vertexesQ.add(i);
+                    lastParents[i] = vInd;
                 }
             }
-            level++;
         }
-        return new HashMap<>();
+        return null;
+    }
+
+    private ArrayList<Vertex> makeResultPath(int[] pathByParents, int VTo) {
+        ArrayList<Vertex> result = new ArrayList<>();
+        if (pathByParents == null) return result;
+        result.add(vertex[VTo]);
+        for (int i = VTo; pathByParents[i] != -1; i = pathByParents[i]) {
+            result.add(vertex[pathByParents[i]]);
+        }
+        return new ArrayList<>(result.reversed());
     }
 
     //TODO additional tasks
@@ -149,55 +149,43 @@ class SimpleGraph
         //здесь считаем, что корень дерева лежит в vertex[0], но в принципе ничего не мешает работать с любой вершиной как корнем
         int vCnt = markVertexUnHitAndCount();
         if (vCnt == 0 || vertex[0] == null) return new ArrayList<>();
-        BiFunction<Integer, Integer,  Boolean> count = (i, r) -> {
+        BiFunction<Integer, Integer,  Boolean> count = (i, level) -> {
             result.set(1, i);
-            result.set(2, r);
+            result.set(2, level);
             return false;
         };
-        BFS(0, count);
+        int[] pathByParents = BFS(0, count);
+        ArrayList<Vertex> path = makeResultPath(pathByParents, result.get(1));
+        int ln = makeResultPath(pathByParents, result.get(1)).size() - 1;
         return result;
     }
 
-    private void BFS(int VFrom, BiFunction<Integer, Integer, Boolean> processVertexAndExit) {
+    private int[] BFS(int VFrom, BiFunction<Integer, Integer, Boolean> processVertexAndExit) {
         Queue<Integer> vertexesQ = new LinkedList<>();
+        int[] lastParents = new int[max_vertex];
+        Arrays.fill(lastParents, -1);
         vertexesQ.add(VFrom);
-        int remoteness = 0;
+        int level = 0;
         for (; !vertexesQ.isEmpty();) {
             int levelSize = vertexesQ.size();
             for (int l = 0; l < levelSize; l++) {
                 int vInd = vertexesQ.remove();
-                boolean terminate = processVertexAndExit.apply(vInd, remoteness);
-                if (terminate) return;
+                boolean terminate = processVertexAndExit.apply(vInd, level);
+                if (terminate) return lastParents;
                 vertex[vInd].Hit = true;
                 for (int i = 0; i < vertex.length; i++) {
                     if (m_adjacency[vInd][i] == 1 && !vertex[i].Hit) {
                         vertex[i].Hit = true;
                         vertexesQ.add(i);
+                        lastParents[i] = vInd;
                     }
                 }
             }
-            remoteness++;
+            level++;
         }
+        return lastParents;
     }
 
-    public ArrayList<ArrayList<Integer>> getCyclesByBiFunc() {
-        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-        int vCnt = markVertexUnHitAndCount();
-        if (vCnt == 0) return result;
-        int[] color = new int[max_vertex];
-        int currentRemoteness = 0;
-        BiFunction<Integer, Integer, Boolean> checkCycle = (i, r) -> {
-
-            return false;
-        };
-
-        for (int i = 0; i < vertex.length; i++) {
-            if (vertex[i] != null && color[i] == 0) {
-                BFS(i, checkCycle);
-            }
-        }
-        return result;
-    }
 
     public ArrayList<ArrayList<Integer>> getCycles() {
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
@@ -205,10 +193,10 @@ class SimpleGraph
         if (vCnt == 0) return result;
         int[] VFrom = {0};
         Map<Integer, Integer> route = new HashMap<>();
-        BiFunction<Integer, Integer, Boolean> checkCycle = (i, r) -> {
-            route.put(r, i);
+        BiFunction<Integer, Integer, Boolean> checkCycle = (i, level) -> {
+            route.put(level, i);
             if (m_adjacency[i][VFrom[0]] == 0) return false;
-            if (route.get(r-1) == VFrom[0]) return false;
+            if (route.get(level-1) == VFrom[0]) return false;
             ArrayList<Integer> fullPath = new ArrayList<>();
             for (int j = 0; j < route.size(); j++) {
                 fullPath.add(route.get(j));
@@ -220,6 +208,39 @@ class SimpleGraph
             markVertexUnHitAndCount();
             VFrom[0] = i;
             BFS(i, checkCycle);
+        }
+        return result;
+    }
+
+    public ArrayList<ArrayList<Vertex>> getCyclesByBiFunc() {
+        Queue<Integer> vertexesQ = new LinkedList<>();
+        ArrayList<ArrayList<Vertex>> result = new ArrayList<>();
+        int vCnt = markVertexUnHitAndCount();
+        if (vCnt == 0) return result;
+        int[] lastParents = new int[max_vertex];
+        Arrays.fill(lastParents, -1);
+
+        for (int VFrom = 0; VFrom < max_vertex; VFrom++) {
+            if (vertex[VFrom] != null && !vertex[VFrom].Hit) {
+                vertexesQ.add(VFrom);
+                vertex[VFrom].Hit = true;
+                for (; !vertexesQ.isEmpty();) {
+                    int vInd = vertexesQ.remove();
+                    for (int i = 0; i < vertex.length; i++) {
+                        if (m_adjacency[vInd][i] == 1 && vertex[i] != null && vertex[i].Hit && lastParents[vInd] != i) {
+                            //цикл++
+                            ArrayList<Vertex> route = makeResultPath(lastParents, vInd);
+                            route.add(vertex[i]);
+                            result.add(route);
+                        }
+                        if (m_adjacency[vInd][i] == 1 && vertex[i] != null && !vertex[i].Hit) {
+                            vertex[i].Hit = true;
+                            vertexesQ.add(i);
+                            lastParents[i] = vInd;
+                        }
+                    }
+                }
+            }
         }
         return result;
     }
