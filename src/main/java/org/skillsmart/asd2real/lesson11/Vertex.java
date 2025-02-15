@@ -143,7 +143,7 @@ class SimpleGraph
     //TODO additional tasks
 
     // Возвращает массив: индекс начального узла; индекс конечного узла; расстояние (количество ребер) между ними
-    //Сложность: time - O(n); память - O(n)
+    //Сложность: time - O(n^2); память - O(n)
     public ArrayList<Integer> getMostDistantVertexAndDistance() {
         ArrayList<Integer> result = new ArrayList<>(Arrays.asList(0, 0, 0));
         //здесь считаем, что корень дерева лежит в vertex[0], но в принципе ничего не мешает работать с любой вершиной как корнем
