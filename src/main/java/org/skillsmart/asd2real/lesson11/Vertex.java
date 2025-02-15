@@ -197,20 +197,20 @@ class SimpleGraph
             if (vertex[VFrom] != null && !vertex[VFrom].Hit) {
                 vertexesQ.add(VFrom);
                 vertex[VFrom].Hit = true;
-                for (; !vertexesQ.isEmpty();) {
-                    int vInd = vertexesQ.remove();
-                    for (int i = 0; i < vertex.length; i++) {
-                        if (m_adjacency[vInd][i] == 1 && vertex[i] != null && vertex[i].Hit && lastParents[vInd] != i) {
-                            //имеем цикл++
-                            ArrayList<Integer> route = makeResultPathByIndexes(lastParents, vInd);
-                            route.add(i);
-                            result.add(route);
-                        }
-                        if (m_adjacency[vInd][i] == 1 && vertex[i] != null && !vertex[i].Hit) {
-                            vertex[i].Hit = true;
-                            vertexesQ.add(i);
-                            lastParents[i] = vInd;
-                        }
+            }
+            for (; !vertexesQ.isEmpty();) {
+                int vInd = vertexesQ.remove();
+                for (int i = 0; i < vertex.length; i++) {
+                    if (m_adjacency[vInd][i] == 1 && vertex[i] != null && vertex[i].Hit && lastParents[vInd] != i) {
+                        //имеем цикл++
+                        ArrayList<Integer> route = makeResultPathByIndexes(lastParents, vInd);
+                        route.add(i);
+                        result.add(route);
+                    }
+                    if (m_adjacency[vInd][i] == 1 && vertex[i] != null && !vertex[i].Hit) {
+                        vertex[i].Hit = true;
+                        vertexesQ.add(i);
+                        lastParents[i] = vInd;
                     }
                 }
             }

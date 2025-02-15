@@ -138,4 +138,21 @@ class SimpleGraph
         }
         return new ArrayList<>(result.reversed());
     }
+
+    public ArrayList<Vertex> WeakVertices()
+    {
+        // возвращает список узлов вне треугольников
+        ArrayList<Vertex> result = new ArrayList<>();
+        for (int i = 0; i < max_vertex; i++) {
+            for (int j = 0; j < max_vertex; j++) {
+                if (m_adjacency[i][j] == 1) {
+
+                }
+            }
+        }
+        return result;
+    }
+
+    //TODO additional tasks
+
 }
