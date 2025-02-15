@@ -141,18 +141,102 @@ class SimpleGraph
 
     public ArrayList<Vertex> WeakVertices()
     {
-        // возвращает список узлов вне треугольников
+        int vCnt = markVertexUnHitAndCount();
         ArrayList<Vertex> result = new ArrayList<>();
-        for (int i = 0; i < max_vertex; i++) {
-            for (int j = 0; j < max_vertex; j++) {
-                if (m_adjacency[i][j] == 1) {
-
+        if (vCnt == 0) return result;
+        for (int curVert = 0; curVert < vertex.length; curVert++) {
+            ArrayList<Integer> neighbors = new ArrayList<>();
+            for (int j = 0; j < vertex.length; j++) {
+                if (m_adjacency[curVert][j] == 1) {
+                    neighbors.add(j);
                 }
             }
+            for (int j = 0; j < neighbors.size() - 1; j++) {
+                for (int k = j + 1; k < neighbors.size(); k++) {
+                    int n1 = neighbors.get(j);
+                    int n2 = neighbors.get(k);
+                    if (m_adjacency[n1][n2] == 1) {
+                        vertex[curVert].Hit = true;
+                        vertex[n1].Hit = true;
+                        vertex[n2].Hit = true;
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < max_vertex; i++) {
+            if (!vertex[i].Hit) result.add(vertex[i]);
         }
         return result;
     }
 
     //TODO additional tasks
 
+    //Сложность time - O(n^2); память - O(n)
+    public int getTrianglesCnt() {
+        int vCnt = markVertexUnHitAndCount();
+        if (vCnt == 0) return 0;
+        int trianglesCnt = 0;
+        for (int curVert = 0; curVert < vertex.length; curVert++) {
+            ArrayList<Integer> neighbors = new ArrayList<>();
+            for (int j = 0; j < vertex.length; j++) {
+                if (m_adjacency[curVert][j] == 1) {
+                    neighbors.add(j);
+                }
+            }
+            for (int j = 0; j < neighbors.size() - 1; j++) {
+                for (int k = j + 1; k < neighbors.size(); k++) {
+                    int n1 = neighbors.get(j);
+                    int n2 = neighbors.get(k);
+                    if (m_adjacency[n1][n2] == 1 && (!vertex[curVert].Hit || !vertex[n1].Hit || !vertex[n2].Hit)) {
+                         trianglesCnt++;
+                         vertex[curVert].Hit = true;
+                         vertex[n1].Hit = true;
+                         vertex[n2].Hit = true;
+                    }
+                }
+            }
+        }
+        return trianglesCnt;
+    }
+
+    public int getSize() {
+        return max_vertex;
+    }
+
+    public Vertex getVertex(int i) {
+        return vertex[i];
+    }
+
+    //Сложность time - O(n^2); память - O(n)
+    public ArrayList<Vertex> WeakVerticesByPublic() {
+        Set<Vertex> inTriangles = new HashSet<>();
+        for (int i = 0; i < getSize() - 1; i++) {
+            ArrayList<Integer> neighbors = new ArrayList<>();
+            for (int j = 0; j < getSize(); j++) {
+                boolean hasEdge = IsEdge(i, j);
+                if (hasEdge) neighbors.add(j);
+            }
+            for (int j = 0; j < neighbors.size() - 1; j++) {
+                for (int k = j; k < neighbors.size(); k++) {
+                    if (IsEdge(neighbors.get(j), neighbors.get(k))) {
+                        inTriangles.add(getVertex(i));
+                        inTriangles.add(getVertex(neighbors.get(j)));
+                        inTriangles.add(getVertex(neighbors.get(k)));
+                    }
+                }
+            }
+        }
+        ArrayList<Vertex> result = new ArrayList<>();
+        for (int i = 0; i < getSize(); i++) {
+            Vertex v = getVertex(i);
+            if (v != null) result.add(getVertex(i));
+        }
+        result.removeAll(inTriangles);
+        return result;
+    }
+
+    //Сложность time - O(n^2); память - O(n)
+    public ArrayList<Vertex> WeakVerticesByMatrix() {
+
+    }
 }
