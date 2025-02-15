@@ -154,9 +154,7 @@ class SimpleGraph
             result.set(2, level);
             return false;
         };
-        int[] pathByParents = BFS(0, count);
-        ArrayList<Vertex> path = makeResultPath(pathByParents, result.get(1));
-        int ln = makeResultPath(pathByParents, result.get(1)).size() - 1;
+        BFS(0, count);
         return result;
     }
 
@@ -186,35 +184,10 @@ class SimpleGraph
         return lastParents;
     }
 
-
+    //Сложность: time - O(n^2) ; память - O(n)
     public ArrayList<ArrayList<Integer>> getCycles() {
-        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-        int vCnt = markVertexUnHitAndCount();
-        if (vCnt == 0) return result;
-        int[] VFrom = {0};
-        Map<Integer, Integer> route = new HashMap<>();
-        BiFunction<Integer, Integer, Boolean> checkCycle = (i, level) -> {
-            route.put(level, i);
-            if (m_adjacency[i][VFrom[0]] == 0) return false;
-            if (route.get(level-1) == VFrom[0]) return false;
-            ArrayList<Integer> fullPath = new ArrayList<>();
-            for (int j = 0; j < route.size(); j++) {
-                fullPath.add(route.get(j));
-            }
-            result.add(fullPath);
-            return false;
-        };
-        for (int i = 0; i < vertex.length; i++) {
-            markVertexUnHitAndCount();
-            VFrom[0] = i;
-            BFS(i, checkCycle);
-        }
-        return result;
-    }
-
-    public ArrayList<ArrayList<Vertex>> getCyclesByBiFunc() {
         Queue<Integer> vertexesQ = new LinkedList<>();
-        ArrayList<ArrayList<Vertex>> result = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
         int vCnt = markVertexUnHitAndCount();
         if (vCnt == 0) return result;
         int[] lastParents = new int[max_vertex];
@@ -228,9 +201,9 @@ class SimpleGraph
                     int vInd = vertexesQ.remove();
                     for (int i = 0; i < vertex.length; i++) {
                         if (m_adjacency[vInd][i] == 1 && vertex[i] != null && vertex[i].Hit && lastParents[vInd] != i) {
-                            //цикл++
-                            ArrayList<Vertex> route = makeResultPath(lastParents, vInd);
-                            route.add(vertex[i]);
+                            //имеем цикл++
+                            ArrayList<Integer> route = makeResultPathByIndexes(lastParents, vInd);
+                            route.add(i);
                             result.add(route);
                         }
                         if (m_adjacency[vInd][i] == 1 && vertex[i] != null && !vertex[i].Hit) {
@@ -245,44 +218,15 @@ class SimpleGraph
         return result;
     }
 
-    public boolean hasCycles() {
-        //0 - white, 1 - grey, 2 - black
-        int[] color = new int[max_vertex];
-        ArrayList<Integer> cycle = new ArrayList<>();
-        Queue<Integer> vertexesQ = new LinkedList<>();
-        vertexesQ.add(0);
-        for (; !vertexesQ.isEmpty();) {
-            int vInd = vertexesQ.remove();
-            vertex[vInd].Hit = true;
-            color[vInd] = 1;
-            for (int i = 0; i < vertex.length; i++) {
-                if (m_adjacency[vInd][i] == 1 && color[i] == 1) {
-                    //найден цикл!
-                }
-                if (m_adjacency[vInd][i] == 1 && color[i] == 0) {
-                    color[i] = 1;
-                    vertexesQ.add(i);
-                }
-            }
-            color[vInd] = 2;
+    private ArrayList<Integer> makeResultPathByIndexes(int[] pathByParents, int VTo) {
+        ArrayList<Integer> result = new ArrayList<>();
+        if (pathByParents == null) return result;
+        result.add(VTo);
+        for (int i = VTo; pathByParents[i] != -1; i = pathByParents[i]) {
+            result.add(pathByParents[i]);
         }
-        for (int i = 0; i < max_vertex; i++) {
-            if (color[i] == 0 && hasCycles(color, i)) return true;
-        }
-        return false;
+        return new ArrayList<>(result.reversed());
     }
-
-    private boolean hasCycles(int[] color, int v) {
-        if (color[v] == 2) return false;
-        if (color[v] == 1) return true;
-        color[v] = 1;
-        for (int i = 0; i < max_vertex; i++) {
-            if (m_adjacency[v][i] == 1 && hasCycles(color, i)) return true;
-        }
-        color[v] = 2;
-        return false;
-    }
-
 }
 
 

@@ -1,7 +1,6 @@
 package org.skillsmart.asd2real.lesson12;
 
 import java.util.*;
-import java.util.function.BiFunction;
 
 class Vertex
 {

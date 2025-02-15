@@ -133,17 +133,19 @@ class SimpleGraphTest {
         assertEquals(0, graph.getCycles().size());
         graph.AddEdge(0, 2);
         ArrayList<ArrayList<Integer>> res = graph.getCycles();
-        assertEquals(1, res.size());
+        assertEquals(2, res.size());
         assertEquals(0, res.get(0).get(0));
         assertEquals(1, res.get(0).get(1));
         assertEquals(2, res.get(0).get(2));
+        assertEquals(0, res.get(1).get(0));
+        assertEquals(2, res.get(1).get(1));
+        assertEquals(1, res.get(1).get(2));
         graph.AddEdge(2, 2);
         res = graph.getCycles();
-        assertEquals(1, res.size());
+        assertEquals(3, res.size());
         assertEquals(0, res.get(0).get(0));
         assertEquals(1, res.get(0).get(1));
         assertEquals(2, res.get(0).get(2));
-        assertEquals(2, res.get(1).get(0));
     }
 
     @Test
@@ -164,34 +166,6 @@ class SimpleGraphTest {
         graph.AddEdge(3, 3);
         graph.AddEdge(3, 4);
         ArrayList<ArrayList<Integer>> res = graph.getCycles();
-        assertEquals(5, res.size());
-    }
-
-    @Test
-    void testGetCyclesByBi_EmptyAndSmallGraph() {
-        SimpleGraph graph = new SimpleGraph(3);
-        assertEquals(0, graph.getCyclesByBiFunc().size());
-        graph.AddVertex(10);
-        graph.AddVertex(11);
-        graph.AddVertex(12);
-        graph.AddEdge(0, 1);
-        graph.AddEdge(1, 2);
-        assertEquals(0, graph.getCyclesByBiFunc().size());
-        graph.AddEdge(0, 2);
-        ArrayList<ArrayList<Vertex>> res = graph.getCyclesByBiFunc();
-        assertEquals(2, res.size());
-        assertEquals(10, res.get(0).get(0).Value);
-        assertEquals(11, res.get(0).get(1).Value);
-        assertEquals(12, res.get(0).get(2).Value);
-        assertEquals(10, res.get(1).get(0).Value);
-        assertEquals(12, res.get(1).get(1).Value);
-        assertEquals(11, res.get(1).get(2).Value);
-        graph.AddEdge(2, 2);
-        res = graph.getCyclesByBiFunc();
-        assertEquals(3, res.size());
-        assertEquals(10, res.get(0).get(0).Value);
-        assertEquals(11, res.get(0).get(1).Value);
-        assertEquals(12, res.get(0).get(2).Value);
-        assertEquals(12, res.get(1).get(0).Value);
+        assertEquals(7, res.size());
     }
 }
