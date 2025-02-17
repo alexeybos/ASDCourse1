@@ -169,8 +169,6 @@ class SimpleGraph
         return result;
     }
 
-    //TODO additional tasks
-
     //Сложность time - O(n^3); память - O(n)
     public int getTrianglesCnt() {
         int vCnt = markVertexUnHitAndCount();
