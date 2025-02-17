@@ -146,15 +146,24 @@ class SimpleGraph
     //Сложность: time - O(n^2); память - O(n)
     public ArrayList<Integer> getMostDistantVertexAndDistance() {
         ArrayList<Integer> result = new ArrayList<>(Arrays.asList(0, 0, 0));
-        //здесь считаем, что корень дерева лежит в vertex[0], но в принципе ничего не мешает работать с любой вершиной как корнем
         int vCnt = markVertexUnHitAndCount();
         if (vCnt == 0 || vertex[0] == null) return new ArrayList<>();
+        int[] farVertex = {0};
+        int[] remoteness = {0};
         BiFunction<Integer, Integer,  Boolean> count = (i, level) -> {
-            result.set(1, i);
-            result.set(2, level);
+            farVertex[0] = i;
+            remoteness[0] = level;
             return false;
         };
+        //находим наиболее удаленный от вершины [0]
         BFS(0, count);
+        result.set(0, farVertex[0]);
+        //находим наиболее удаленный от найденного
+        markVertexUnHitAndCount();
+        BFS(farVertex[0], count);
+        result.set(1, farVertex[0]);
+        result.set(2, remoteness[0]);
+
         return result;
     }
 
@@ -186,47 +195,69 @@ class SimpleGraph
 
     //Сложность: time - O(n^2) ; память - O(n)
     public ArrayList<ArrayList<Integer>> getCycles() {
-        Queue<Integer> vertexesQ = new LinkedList<>();
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
         int vCnt = markVertexUnHitAndCount();
         if (vCnt == 0) return result;
+        Map<ArrayList<Integer>, ArrayList<Integer>> resultArrOfCycles = new HashMap<>();
+        for (int i = 0; i < max_vertex; i++) {
+            getCyclesFromVertex(i, resultArrOfCycles);
+        }
+        return new ArrayList<>(resultArrOfCycles.values());
+    }
+
+    private void getCyclesFromVertex(int VFrom, Map<ArrayList<Integer>, ArrayList<Integer>> resultArrOfCycles) {
+        Queue<Integer> vertexesQ = new LinkedList<>();
+        int vCnt = markVertexUnHitAndCount();
+        if (vCnt == 0) return;
         int[] lastParents = new int[max_vertex];
         Arrays.fill(lastParents, -1);
 
-        for (int VFrom = 0; VFrom < max_vertex; VFrom++) {
-            if (vertex[VFrom] != null && !vertex[VFrom].Hit) {
-                vertexesQ.add(VFrom);
-                vertex[VFrom].Hit = true;
-            }
-            for (; !vertexesQ.isEmpty();) {
-                int vInd = vertexesQ.remove();
-                for (int i = 0; i < vertex.length; i++) {
-                    if (m_adjacency[vInd][i] == 1 && vertex[i] != null && vertex[i].Hit && lastParents[vInd] != i) {
-                        //имеем цикл++
-                        ArrayList<Integer> route = makeResultPathByIndexes(lastParents, vInd);
-                        route.add(i);
-                        result.add(route);
-                    }
-                    if (m_adjacency[vInd][i] == 1 && vertex[i] != null && !vertex[i].Hit) {
-                        vertex[i].Hit = true;
-                        vertexesQ.add(i);
-                        lastParents[i] = vInd;
-                    }
+        vertexesQ.add(VFrom);
+        vertex[VFrom].Hit = true;
+        for (; !vertexesQ.isEmpty();) {
+            int vInd = vertexesQ.remove();
+            for (int i = 0; i < vertex.length; i++) {
+                if (m_adjacency[vInd][i] == 1 && vertex[i] != null && vertex[i].Hit && lastParents[vInd] != i) {
+                    //имеем цикл++
+                    ArrayList<Integer> route = makeResultPathInCycle(lastParents, vInd, i);
+                    addTraceToCycles(resultArrOfCycles, route);
+                }
+                if (m_adjacency[vInd][i] == 1 && vertex[i] != null && !vertex[i].Hit) {
+                    vertex[i].Hit = true;
+                    vertexesQ.add(i);
+                    lastParents[i] = vInd;
                 }
             }
         }
+    }
+
+    private ArrayList<Integer> makeResultPathInCycle(int[] pathByParents, int VLast, int vEndCycle) {
+        ArrayList<Integer> pathFromEndV = new ArrayList<>();
+        if (pathByParents == null) return pathFromEndV;
+        if (VLast == vEndCycle) return new ArrayList<>(Arrays.asList(VLast, vEndCycle));
+
+        pathFromEndV.add(VLast);
+        for (int i = VLast; pathByParents[i] != -1; i = pathByParents[i]) {
+            pathFromEndV.add(pathByParents[i]);
+            if (pathByParents[vEndCycle] == pathByParents[i]) {
+                ArrayList<Integer> result = new ArrayList<>(pathFromEndV.reversed());
+                result.add(vEndCycle);
+                return result;
+            }
+        }
+        ArrayList<Integer> pathFromEndCycleV = new ArrayList<>();
+        pathFromEndCycleV.add(vEndCycle);
+        for (int i = vEndCycle; pathByParents[i] != -1 && pathByParents[i] != pathFromEndV.getLast(); i = pathByParents[i]) {
+            pathFromEndCycleV.add(pathByParents[i]);
+        }
+        ArrayList<Integer> result = new ArrayList<>(pathFromEndV.reversed());
+        result.addAll(pathFromEndCycleV);
         return result;
     }
 
-    private ArrayList<Integer> makeResultPathByIndexes(int[] pathByParents, int VTo) {
-        ArrayList<Integer> result = new ArrayList<>();
-        if (pathByParents == null) return result;
-        result.add(VTo);
-        for (int i = VTo; pathByParents[i] != -1; i = pathByParents[i]) {
-            result.add(pathByParents[i]);
-        }
-        return new ArrayList<>(result.reversed());
+    private void addTraceToCycles(Map<ArrayList<Integer>, ArrayList<Integer>> resultArrOfCycles, ArrayList<Integer> cycleToAdd) {
+        ArrayList<Integer> nativeList = new ArrayList<>(cycleToAdd);
+        Collections.sort(cycleToAdd);
+        resultArrOfCycles.put(cycleToAdd, nativeList);
     }
 }
-
-

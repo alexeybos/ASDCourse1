@@ -171,7 +171,7 @@ class SimpleGraph
 
     //TODO additional tasks
 
-    //Сложность time - O(n^2); память - O(n)
+    //Сложность time - O(n^3); память - O(n)
     public int getTrianglesCnt() {
         int vCnt = markVertexUnHitAndCount();
         if (vCnt == 0) return 0;
@@ -207,7 +207,7 @@ class SimpleGraph
         return vertex[i];
     }
 
-    //Сложность time - O(n^2); память - O(n)
+    //Сложность time - O(n^3); память - O(n)
     public ArrayList<Vertex> WeakVerticesByPublic() {
         Set<Vertex> inTriangles = new HashSet<>();
         for (int i = 0; i < getSize() - 1; i++) {
@@ -235,8 +235,33 @@ class SimpleGraph
         return result;
     }
 
-    //Сложность time - O(n^2); память - O(n)
-    public ArrayList<Vertex> WeakVerticesByMatrix() {
+    //Сложность time - O(n^3); память - O(n)
+    public ArrayList<Vertex> WeakVerticesByMatrixAnalyze() {
+        int vCnt = markVertexUnHitAndCount();
+        if (vCnt == 0) return new ArrayList<>();
+        ArrayList<Vertex> result = new ArrayList<>();
+        for (int curVert = 0; curVert < vertex.length; curVert++) {
+            ArrayList<Integer> neighbors = new ArrayList<>();
+            if (!vertex[curVert].Hit) {
 
+            }
+            for (int j = 0; j < vertex.length; j++) {
+                if (m_adjacency[curVert][j] == 1) {
+                    neighbors.add(j);
+                }
+            }
+            for (int j = 0; j < neighbors.size() - 1; j++) {
+                for (int k = j + 1; k < neighbors.size(); k++) {
+                    int n1 = neighbors.get(j);
+                    int n2 = neighbors.get(k);
+                    if (m_adjacency[n1][n2] == 1) {
+                        vertex[curVert].Hit = true;
+                        vertex[n1].Hit = true;
+                        vertex[n2].Hit = true;
+                    }
+                }
+            }
+        }
+        return result;
     }
 }
