@@ -241,27 +241,31 @@ class SimpleGraph
         if (vCnt == 0) return new ArrayList<>();
         ArrayList<Vertex> result = new ArrayList<>();
         for (int curVert = 0; curVert < vertex.length; curVert++) {
-            ArrayList<Integer> neighbors = new ArrayList<>();
-            if (!vertex[curVert].Hit) {
+            if (!isVertexInTriangleCheckAndMark(curVert)) result.add(vertex[curVert]);
+        }
+        return result;
+    }
 
+    private boolean isVertexInTriangleCheckAndMark(int vInd) {
+        if (vertex[vInd].Hit) return true;
+        ArrayList<Integer> neighbors = new ArrayList<>();
+        for (int j = 0; j < vertex.length; j++) {
+            if (m_adjacency[vInd][j] == 1) {
+                neighbors.add(j);
             }
-            for (int j = 0; j < vertex.length; j++) {
-                if (m_adjacency[curVert][j] == 1) {
-                    neighbors.add(j);
-                }
-            }
-            for (int j = 0; j < neighbors.size() - 1; j++) {
-                for (int k = j + 1; k < neighbors.size(); k++) {
-                    int n1 = neighbors.get(j);
-                    int n2 = neighbors.get(k);
-                    if (m_adjacency[n1][n2] == 1) {
-                        vertex[curVert].Hit = true;
-                        vertex[n1].Hit = true;
-                        vertex[n2].Hit = true;
-                    }
+        }
+        for (int j = 0; j < neighbors.size() - 1; j++) {
+            for (int k = j + 1; k < neighbors.size(); k++) {
+                int n1 = neighbors.get(j);
+                int n2 = neighbors.get(k);
+                if (m_adjacency[n1][n2] == 1) {
+                    vertex[vInd].Hit = true;
+                    vertex[n1].Hit = true;
+                    vertex[n2].Hit = true;
+                    return true;
                 }
             }
         }
-        return result;
+        return false;
     }
 }

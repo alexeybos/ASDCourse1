@@ -70,6 +70,29 @@ class SimpleGraphTest {
     }
 
     @Test
+    void getMostDistantVertexAndDistance_Cycles() {
+        SimpleGraph graph = new SimpleGraph(7);
+        assertEquals(0, graph.getMostDistantVertexAndDistance().size());
+        graph.AddVertex(10);
+        graph.AddVertex(11);
+        graph.AddVertex(12);
+        graph.AddVertex(13);
+        graph.AddVertex(14);
+        graph.AddVertex(15);
+        graph.AddVertex(16);
+        graph.AddEdge(0, 1);
+        graph.AddEdge(0, 2);
+        graph.AddEdge(1, 3);
+        graph.AddEdge(2, 3);
+        graph.AddEdge(2, 4);
+        graph.AddEdge(3, 4);
+        graph.AddEdge(3, 5);
+        graph.AddEdge(5, 6);
+        ArrayList<Integer> res = graph.getMostDistantVertexAndDistance();
+        assertEquals(3, res.size());
+    }
+
+    @Test
     void getMostDistantVertexAndDistance_BigTree() {
         SimpleGraph graph = new SimpleGraph(6);
         assertEquals(0, graph.getMostDistantVertexAndDistance().size());
