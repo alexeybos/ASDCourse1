@@ -173,7 +173,11 @@ class SimpleGraph
     public int getTrianglesCnt() {
         int vCnt = markVertexUnHitAndCount();
         if (vCnt == 0) return 0;
-        int trianglesCnt = 0;
+        return getTriangles().size() / 3;
+    }
+
+    public ArrayList<Vertex> getTriangles() {
+        ArrayList<Vertex> triangles = new ArrayList<>();
         for (int curVert = 0; curVert < vertex.length; curVert++) {
             ArrayList<Integer> neighbors = new ArrayList<>();
             for (int j = 0; j < vertex.length; j++) {
@@ -186,15 +190,15 @@ class SimpleGraph
                     int n1 = neighbors.get(j);
                     int n2 = neighbors.get(k);
                     if (m_adjacency[n1][n2] == 1 && (!vertex[curVert].Hit || !vertex[n1].Hit || !vertex[n2].Hit)) {
-                         trianglesCnt++;
-                         vertex[curVert].Hit = true;
-                         vertex[n1].Hit = true;
-                         vertex[n2].Hit = true;
+                        vertex[curVert].Hit = true;
+                        vertex[n1].Hit = true;
+                        vertex[n2].Hit = true;
+                        triangles.addAll(Arrays.asList(vertex[curVert], vertex[n1], vertex[n2]));
                     }
                 }
             }
         }
-        return trianglesCnt;
+        return triangles;
     }
 
     public int getSize() {
@@ -207,6 +211,17 @@ class SimpleGraph
 
     //Сложность time - O(n^3); память - O(n)
     public ArrayList<Vertex> WeakVerticesByPublic() {
+        ArrayList<Vertex> triangles = getTriangles();
+        ArrayList<Vertex> result = new ArrayList<>();
+        for (int i = 0; i < getSize(); i++) {
+            Vertex v = getVertex(i);
+            //if (v != null && !triangles.contains(v)) result.add(v);
+            if (v != null && !triangles.remove(v)) result.add(v);
+        }
+        return result;
+    }
+
+    public ArrayList<Vertex> WeakVerticesByPublic_Old() {
         Set<Vertex> inTriangles = new HashSet<>();
         for (int i = 0; i < getSize() - 1; i++) {
             ArrayList<Integer> neighbors = new ArrayList<>();
